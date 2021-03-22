@@ -1,0 +1,10 @@
+#!/bin/bash
+
+PROGNAME="$(readlink $0)"
+if [[ -z $PROGNAME ]] ; then
+    PROGNAME="$0"
+fi
+BASEDIR="$(dirname $PROGNAME)"
+
+java -jar $BASEDIR/eplan.jar "$@"
+
