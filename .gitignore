@@ -25,7 +25,15 @@ hs_err_pid*
 # macOS files
 .DS_Store
 
-# re-include lib files
-!/lib/*.jar
-
+# Eclipse files
+.classpath
+.project
+.settings/
 /bin/
+
+# Gradle Files
+/build/
+.gradle/
+
+# re-include gradle wrapper file
+!/gradle/wrapper/gradle-wrapper.jar

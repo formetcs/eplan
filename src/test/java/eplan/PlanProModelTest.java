@@ -27,7 +27,7 @@ class PlanProModelTest {
 	static void setupModel() {
 		ppm = new PlanProModel();
 		try {
-			ppm.readFile("branches.ppxml");
+			ppm.readFile(PlanProModelTest.class.getResource("branches.ppxml"));
 		} catch (JDOMException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

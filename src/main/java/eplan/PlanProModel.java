@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URL;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -50,6 +51,19 @@ public class PlanProModel {
 	 */
 	public void readFile(String filename) throws JDOMException, IOException {
 		doc = new SAXBuilder().build(filename);
+	}
+	
+	
+	/**
+	 * Read the DOM tree from an URL.
+	 * 
+	 * 
+	 * @param url URL to read from
+	 * @throws JDOMException
+	 * @throws IOException
+	 */
+	public void readFile(URL url) throws JDOMException, IOException {
+		doc = new SAXBuilder().build(url);
 	}
 	
 	
