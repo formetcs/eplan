@@ -17,7 +17,23 @@ public abstract class AbstractComparisonCondition implements Evaluable {
 	 *
 	 */
 	public enum Operator {
-		EQUAL, NOT_EQUAL, LESS_THAN, LESS_EQUAL, GREATER_THAN, GREATER_EQUAL
+		/** Both values have to be equal */
+		EQUAL,
+		
+		/** Both values have to be not equal */
+		NOT_EQUAL,
+		
+		/** The first value has to be less than the second value */
+		LESS_THAN,
+		
+		/** The first value has to be less or equal than the second value */
+		LESS_EQUAL,
+		
+		/** The first value has to be greater than the second value */
+		GREATER_THAN,
+		
+		/** The first value has to be greater or equal than the second value */
+		GREATER_EQUAL
 	}
 	
 	

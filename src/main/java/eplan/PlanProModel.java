@@ -29,10 +29,17 @@ public class PlanProModel {
 	 *
 	 */
 	public enum Direction {
-		NOT_CONNECTED, /** No direct connection */
-		EQUAL, /** Facing in equal direction */
-		OPPOSITE, /** Facing in opposite direction */
-		BOTH /** Facing in both directions (at least one object has effective direction "beide") */
+		/** No direct connection */
+		NOT_CONNECTED,
+		
+		/** Facing in equal direction */
+		EQUAL,
+		
+		/** Facing in opposite direction */
+		OPPOSITE,
+		
+		/** Facing in both directions (at least one object has effective direction "beide") */
+		BOTH
 	}
 	
 	/**
@@ -46,8 +53,8 @@ public class PlanProModel {
 	 * 
 	 * 
 	 * @param filename the name of the file to read from
-	 * @throws JDOMException
-	 * @throws IOException
+	 * @throws JDOMException if an XML parse error occurs
+	 * @throws IOException if a file error occurs
 	 */
 	public void readFile(String filename) throws JDOMException, IOException {
 		doc = new SAXBuilder().build(filename);
@@ -59,8 +66,8 @@ public class PlanProModel {
 	 * 
 	 * 
 	 * @param url URL to read from
-	 * @throws JDOMException
-	 * @throws IOException
+	 * @throws JDOMException if an XML parse error occurs
+	 * @throws IOException if a file error occurs
 	 */
 	public void readFile(URL url) throws JDOMException, IOException {
 		doc = new SAXBuilder().build(url);
@@ -72,7 +79,7 @@ public class PlanProModel {
 	 * 
 	 * 
 	 * @param filename the name of the file to write
-	 * @throws IOException
+	 * @throws IOException if a file error occurs
 	 */
 	public void writeFile(String filename) throws IOException {
 		FileWriter fw = new FileWriter(filename);

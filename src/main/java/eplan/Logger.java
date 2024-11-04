@@ -90,7 +90,7 @@ public class Logger {
 	 * If writing to file is activated, all messages are stored temporarily in memory first and not written to file immediately.
 	 * Calling this method before terminating the program is required to store the memory content finally to disk.
 	 * 
-	 * @throws IOException
+	 * @throws IOException if a file error occurs
 	 */
 	public static void writeLogfile() throws IOException {
 		if(logfile == null) {

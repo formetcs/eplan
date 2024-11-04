@@ -8,7 +8,7 @@ import java.util.List;
 import org.jdom2.Element;
 
 /**
- * Return value for {@link eplan.PlanProModel#getNextPunktObjektPaths(Element startpos, String type, boolean forward)}.
+ * Return value for {@link eplan.PlanProModel#getNextPunktObjektPaths(PunktObjekt startpos, String type, boolean forward)}.
  * It holds the DOM element of a found Punkt_Objekt, a list of DOM elements representing the TOP_Kante objects on the route between the starting object and the found object,
  * and the distance between these points.
  * 
@@ -47,7 +47,7 @@ public class NextPunktObjektPathResult {
 	
 	/**
 	 * Convenience function to get the NextPunktObjektPathResult with the lowest distance value from a list of NextPunktObjektPathResult objects.
-	 * Note that such a list is the return value of {@link eplan.PlanProModel#getNextPunktObjektPaths(Element startpos, String type, boolean forward)},
+	 * Note that such a list is the return value of {@link eplan.PlanProModel#getNextPunktObjektPaths(PunktObjekt startpos, String type, boolean forward)},
 	 * so this function can be used to get the nearest Punkt_Objekt from all possible paths.
 	 * 
 	 * @param list a list of NextPunktObjektPathResult objects
@@ -69,7 +69,7 @@ public class NextPunktObjektPathResult {
 	
 	/**
 	 * Convenience function to get the NextPunktObjektPathResult with the highest distance value from a list of NextPunktObjektPathResult objects.
-	 * Note that such a list is the return value of {@link eplan.PlanProModel#getNextPunktObjektPaths(Element startpos, String type, boolean forward)},
+	 * Note that such a list is the return value of {@link eplan.PlanProModel#getNextPunktObjektPaths(PunktObjekt startpos, String type, boolean forward)},
 	 * so this function can be used to get the farthest Punkt_Objekt from all possible paths.
 	 * 
 	 * @param list a list of NextPunktObjektPathResult objects

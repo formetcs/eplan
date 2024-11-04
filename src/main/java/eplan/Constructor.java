@@ -28,19 +28,62 @@ public class Constructor {
 	private boolean compatibilityMode;
 	List<Element> alreadyHandledDp24;
 	
+	/**
+	 * Set the ETCS level which should be used for planning.
+	 * 
+	 * 
+	 * @param etcslevel the ETCS level
+	 */
 	public void setEtcslevel(int etcslevel) {
 		this.etcslevel = etcslevel;
 	}
 
+	
+	/**
+	 * Turn on compatibility mode.
+	 * This is necessary for older PlanPro files, where the signals for
+	 * boundary marker and lantern of a switch are transposed.
+	 * 
+	 * 
+	 * @param compatibilityMode true to turn on compatibility mode, false to turn off
+	 */
 	public void setCompatibilityMode(boolean compatibilityMode) {
 		this.compatibilityMode = compatibilityMode;
 	}
 	
+	
+	/**
+	 * Set the lists of datapoint types, which should be included or omitted in the final plan.
+	 * The default behavior is that all implemented datapoint types are considered.
+	 * To restrict the datapoints that should be planned to certain types, two lists can be provided:
+	 * An addlist and a removelist.
+	 * If an addlist is provided, only the datapoint types in the addlist are considered.
+	 * If a removelist is provided, all datapoint types except of the types in the removelist are considered.
+	 * Only one list can be used at the same time, the other should be set to null.
+	 * If both lists are provided, the addlist will be used.
+	 * If both lists are null, all datapoint types will be planned (default behavior).
+	 * 
+	 * 
+	 * @param addlist Array of Strings, each containing one datapoint type to include, or null if the list should not be considered
+	 * @param removelist Array of Strings, each containing one datapoint type to omit, or null if the list should not be considered
+	 */
 	public void setSelectionLists(String[] addlist, String[] removelist) {
 		this.addlist = addlist;
 		this.removelist = removelist;
 	}
 
+	
+	/**
+	 * Initialize the constructor object.
+	 * The default behavior is the construction of an ETCS Level 2 plan,
+	 * all available datapoint types are considered and compatibility mode
+	 * is turned off.
+	 * To change this behavior, the respective setter methods have to be used
+	 * before calling the {@link eplan.Constructor#constructEtcsLine()} method.
+	 * 
+	 * 
+	 * @param p The PlanPro model which should be extended to an ETCS plan
+	 */
 	public Constructor(PlanProModel p) {
 		this.ppm = p;
 		this.etcslevel = 2;
@@ -51,22 +94,51 @@ public class Constructor {
 	}
 	
 	
-	
+	/**
+	 * Generate a new random GUID.
+	 * 
+	 * 
+	 * @return the new GUID as string
+	 */
 	public static String generateGuid() {
 		UUID guid = UUID.randomUUID();
 		return guid.toString().toUpperCase();
 	}
 	
+	
+	/**
+	 * Convert speed values from km/h to m/s.
+	 * 
+	 * 
+	 * @param km_h the input value in km/h
+	 * @return the converted value in m/s
+	 */
 	public static double toM_s(double km_h) {
 		return km_h / 3.6;
 	}
 	
+	
+	/**
+	 * Convert speed values from m/s to km/h.
+	 * 
+	 * 
+	 * @param m_s the input value in m/s
+	 * @return the converted value in km/h
+	 */
 	public static double toKm_h(double m_s) {
 		return m_s * 3.6;
 	}
 	
 	
-	
+	/**
+	 * Print out the kilometer mark value of a Punkt_Objekt subtype.
+	 * If the object is no Punkt_Objekt subtype or does not have a
+	 * kilometer mark value, an empty string is returned.
+	 * 
+	 * 
+	 * @param punktObjekt the DOM element of the Punkt_Objekt subtype
+	 * @return the kilometer value, or an empty string if not available
+	 */
 	public static String printKmValue(Element punktObjekt) {
 		if(punktObjekt.getChild("Punkt_Objekt_Strecke") == null) {
 			return "";
@@ -77,6 +149,16 @@ public class Constructor {
 		return punktObjekt.getChild("Punkt_Objekt_Strecke").getChild("Strecke_Km").getChild("Wert").getText();
 	}
 	
+	
+	/**
+	 * Print out the name of a signal.
+	 * This is the long name (Bezeichnung_Lageplan_Lang).
+	 * If the object is no signal or does not have a name, an empty string is returned.
+	 * 
+	 * 
+	 * @param punktObjekt the DOM element of the signal
+	 * @return the signal name
+	 */
 	public static String printSignalBezeichnung(Element punktObjekt) {
 		if(punktObjekt.getChild("Bezeichnung") == null) {
 			return "";
@@ -87,6 +169,15 @@ public class Constructor {
 		return punktObjekt.getChild("Bezeichnung").getChild("Bezeichnung_Lageplan_Lang").getChild("Wert").getText();
 	}
 	
+	
+	/**
+	 * Create a new balise element.
+	 * 
+	 * 
+	 * @param idDatenpunkt id of the corresponding data point
+	 * @param anordnung position of the balise within the balise group
+	 * @return DOM element of the balise
+	 */
 	private Element createBalise(String idDatenpunkt, int anordnung) {
 		Element bal = new Element("Balise");
 		Element iddp = new Element("ID_Datenpunkt");
@@ -107,6 +198,14 @@ public class Constructor {
 		return bal;
 	}
 	
+	
+	/**
+	 * Create a new Identitaet subgroup element.
+	 * 
+	 * 
+	 * @param idstring the GUID string
+	 * @return DOM element of the Identitaet subgroup
+	 */
 	private Element createIdentitaetElement(String idstring) {
 		Element id = new Element("Identitaet");
 		Element wert = new Element("Wert");
@@ -115,6 +214,14 @@ public class Constructor {
 		return id;
 	}
 	
+	
+	/**
+	 * Create a new Basis_Objekt_Allg subgroup element.
+	 * 
+	 * 
+	 * @param datumRegelwerk date of the rulebook
+	 * @return DOM element of the Basis_Objekt_Allg subgroup
+	 */
 	private Element createBasisObjektElement(LocalDate datumRegelwerk) {
 		Element boa = new Element("Basis_Objekt_Allg");
 		Element dr = new Element("Datum_Regelwerk");
@@ -125,6 +232,17 @@ public class Constructor {
 		return boa;
 	}
 	
+	
+	/**
+	 * Create a new Punkt_Objekt_TOP_Kante subgroup element.
+	 * 
+	 * 
+	 * @param idTopKante id of the referenced TOP edge
+	 * @param abstand distance from the beginning of the edge in mm
+	 * @param seitlAbstand lateral distance from the middle of the edge in mm (negative values are on the left side)
+	 * @param wirkrichtung effective direction relative to the edge direction
+	 * @return DOM element of the Punkt_Objekt_TOP_Kante subgroup
+	 */
 	private Element createPunktObjektTopKanteElement(String idTopKante, int abstand, int seitlAbstand, String wirkrichtung) {
 		Element potk = new Element("Punkt_Objekt_TOP_Kante");
 		
@@ -154,6 +272,16 @@ public class Constructor {
 		return potk;
 	}
 	
+	
+	/**
+	 * Create a new Punkt_Objekt_Strecke subgroup element.
+	 * This method automatically calculates the kilometer mark value for the Punkt_Objekt
+	 * by locating already placed neighbor objects and calculating the distances to them.
+	 * 
+	 * 
+	 * @param referencePoint the PunktObjekt structure
+	 * @return DOM element of the Punkt_Objekt_Strecke subgroup
+	 */
 	private Element createPunktObjektStreckeElement(PunktObjekt referencePoint) {
 		Evaluable poCond = new ExistenceCondition("Punkt_Objekt_Strecke");
 		List<NextPunktObjektPathResult> forwardElementList = ppm.getNextPunktObjektPaths(referencePoint, poCond, Direction.BOTH, true);
@@ -220,6 +348,15 @@ public class Constructor {
 		return pos;
 	}
 	
+	
+	/**
+	 * Create a new DP_Bezug_Betrieblich subgroup element.
+	 * 
+	 * 
+	 * @param art type of the reference point
+	 * @param idBezug id of the reference point
+	 * @return DOM element of the DP_Bezug_Betrieblich subgroup
+	 */
 	private Element createDpBezugBetrieblElement(String art, String idBezug) {
 		Element dpbb = new Element("DP_Bezug_Betrieblich");
 		
@@ -237,6 +374,18 @@ public class Constructor {
 		return dpbb;
 	}
 	
+	
+	/**
+	 * Create a new Datenpunkt_Allg subgroup element.
+	 * 
+	 * 
+	 * @param anwendSys application system of the data point
+	 * @param ausrichtung orientation of the data point
+	 * @param beschreibung description of the data point
+	 * @param laenge lenght of the data point (distance between first and last balise)
+	 * @param standort location of the data point
+	 * @return DOM element of the Datenpunkt_Allg subgroup
+	 */
 	private Element createDpAllgElement(String anwendSys, String ausrichtung, String beschreibung, double laenge, String standort) {
 		Element dpallg = new Element("Datenpunkt_Allg");
 		
@@ -270,6 +419,14 @@ public class Constructor {
 		return dpallg;
 	}
 	
+	
+	/**
+	 * Create a new DP_Typ subgroup element for ETCS Level 1.
+	 * 
+	 * 
+	 * @param typ type of the data point
+	 * @return DOM element of the DP_Typ subgroup
+	 */
 	private Element createTypEsgElement(String typ) {
 		Element dptyp = new Element("DP_Typ");
 		Element dptypart = new Element("DP_Typ_Art");
@@ -289,6 +446,14 @@ public class Constructor {
 		return dptyp;
 	}
 	
+	
+	/**
+	 * Create a new DP_Typ subgroup element for ETCS Level 2.
+	 * 
+	 * 
+	 * @param types array with all types the data point should contain
+	 * @return DOM element of the DP_Typ subgroup
+	 */
 	private Element createTypEtcsElement(int[] types) {
 		Element dptyp = new Element("DP_Typ");
 		Element dptypart = new Element("DP_Typ_Art");
@@ -310,6 +475,16 @@ public class Constructor {
 		return dptyp;
 	}
 	
+	
+	/**
+	 * Calculates the distance from a signal to the next trailing point.
+	 * If a point is passed in facing or trailing direction is determined by checking if the
+	 * point blade or fouling point indicator is closer to the start signal.
+	 * 
+	 * 
+	 * @param signal DOM element of the signal which is the starting point of the search
+	 * @return the distance from the signal to the next trailing point, or -1 if there is no such point
+	 */
 	private int calculateDistanceSignalStumpfeWeiche(Element signal) {
 		Evaluable typeCond = new TypeCondition("W_Kr_Gsp_Komponente");
 		Evaluable wExistCond = new ExistenceCondition("Zungenpaar");
@@ -342,6 +517,18 @@ public class Constructor {
 		}
 	}
 	
+	
+	/**
+	 * Calculates the distance from a signal to the next danger point.
+	 * The next danger point is either the distance to the next top node
+	 * (which is also the position of a point blade), the distance to the
+	 * next Ra 10 signal or the distance to the next trailing point,
+	 * depending which of them is closest.
+	 * 
+	 * 
+	 * @param signal DOM element of the signal which is the starting point of the search
+	 * @return the distance from the signal to the next danger point
+	 */
 	private int calculateDistanceSignalDangerPoint(Element signal) {
 		String idTopkante = signal.getChild("Punkt_Objekt_TOP_Kante").getChild("ID_TOP_Kante").getChild("Wert").getText();
 		double tempAbstand = Double.parseDouble(signal.getChild("Punkt_Objekt_TOP_Kante").getChild("Abstand").getChild("Wert").getText());
@@ -380,6 +567,16 @@ public class Constructor {
 		return finalDistance;
 	}
 	
+	
+	/**
+	 * Calculates the maximum allowed approach speed towards a signal.
+	 * This is determined by the branch speed of the point that was passed last,
+	 * but only if it was closer than 1000 m. Otherwise, a default speed of 160 km/h is used.
+	 * 
+	 * 
+	 * @param signal DOM element of the signal
+	 * @return the maximum allowed approach speed, or 160 if not available
+	 */
 	private double calculateVmax(Element signal) {
 		String idTopkante = signal.getChild("Punkt_Objekt_TOP_Kante").getChild("ID_TOP_Kante").getChild("Wert").getText();
 		String wirkrichtung = signal.getChild("Punkt_Objekt_TOP_Kante").getChild("Wirkrichtung").getChild("Wert").getText();
@@ -437,6 +634,17 @@ public class Constructor {
 		return 160;
 	}
 	
+	
+	/**
+	 * Check if a given datapoint type is selected for plan creation.
+	 * This method checks the addlist and removelist to determine which
+	 * datapoint types should be considered for the plan creation.
+	 * If both lists contain values, the addlist is preferred.
+	 * 
+	 * 
+	 * @param searchtype the data point type to ckeck
+	 * @return true if the type is selected, false otherwise
+	 */
 	private boolean isTypeSelected(String searchtype) {
 		if(addlist != null) {
 			for(int i = 0; i < addlist.length; i++) {
@@ -463,6 +671,15 @@ public class Constructor {
 		return true;
 	}
 	
+	
+	/**
+	 * Construct the ETCS line.
+	 * This method adds ETCS objects to the PlanPro model,
+	 * depending on the already existing reference objects.
+	 * Please note that the planning parameters like ETCS Level and
+	 * the selection of datatypes have to be set using the respective
+	 * setter methods before calling this method.
+	 */
 	public void constructEtcsLine() {
 		if(compatibilityMode) {
 			Logger.log("compatibility mode activated");
@@ -518,6 +735,9 @@ public class Constructor {
 	}
 	
 	
+	/**
+	 * Contains the placement rules for datapoint type HS (ETCS Level 1).
+	 */
 	private void placeDpHs() {
 		Logger.log("placing DP HS...");
 		Element containerElement = ppm.getContainerElement();
@@ -562,6 +782,10 @@ public class Constructor {
 		}
 	}
 	
+	
+	/**
+	 * Contains the placement rules for datapoint type MS (ETCS Level 1).
+	 */
 	private void placeDpMs() {
 		Logger.log("placing DP MS...");
 		Element containerElement = ppm.getContainerElement();
@@ -606,6 +830,10 @@ public class Constructor {
 		}
 	}
 
+	
+	/**
+	 * Contains the placement rules for datapoint type VS (ETCS Level 1).
+	 */
 	private void placeDpVs() {
 		Logger.log("placing DP VS...");
 		Element containerElement = ppm.getContainerElement();
@@ -650,6 +878,10 @@ public class Constructor {
 		}
 	}
 
+	
+	/**
+	 * Contains the placement rules for datapoint type VW (ETCS Level 1).
+	 */
 	private void placeDpVw() {
 		Logger.log("placing DP VW...");
 		Element containerElement = ppm.getContainerElement();
@@ -694,6 +926,10 @@ public class Constructor {
 		}
 	}
 
+	
+	/**
+	 * Contains the placement rules for datapoint type AW (ETCS Level 1).
+	 */
 	private void placeDpAw() {
 		Logger.log("placing DP AW...");
 		Element containerElement = ppm.getContainerElement();
@@ -739,6 +975,10 @@ public class Constructor {
 		}
 	}
 	
+	
+	/**
+	 * Contains the placement rules for datapoint type 9 (ETCS Level 2).
+	 */
 	private void placeDp9() {
 		Logger.log("placing DP 9...");
 		Element containerElement = ppm.getContainerElement();
@@ -769,6 +1009,11 @@ public class Constructor {
 		}
 	}
 	
+	/**
+	 * Contains the placement rules for datapoint type 20 (Back-to-back case) (ETCS Level 2).
+	 * Two signals are considered as back-to-back if they are facing in opposite direction
+	 * and have a distance of less than 500 mm.
+	 */
 	private void placeDp20() {
 		Logger.log("placing DP 20...");
 		List<Element> alreadyHandledSignals = new ArrayList<Element>();
@@ -865,6 +1110,13 @@ public class Constructor {
 		}
 	}
 	
+	
+	/**
+	 * Contains the placement rules for datapoint type 20 (Regular case) (ETCS Level 2).
+	 * 
+	 * 
+	 * @param currentObject DOM element of the reference point for the datapoint
+	 */
 	private void placeDp20Regular(Element currentObject) {
 		Element containerElement = ppm.getContainerElement();
 		String signalId = currentObject.getChild("Identitaet").getChild("Wert").getText();
@@ -892,6 +1144,12 @@ public class Constructor {
 		}
 	}
 	
+	
+	/**
+	 * Contains the placement rules for datapoint type 21 (Back-to-back case) (ETCS Level 2).
+	 * Two signals are considered as back-to-back if they are facing in opposite direction
+	 * and have a distance of less than 500 mm.
+	 */
 	private void placeDp21() {
 		Logger.log("placing DP 21...");
 		List<Element> alreadyHandledSignals = new ArrayList<Element>();
@@ -997,6 +1255,13 @@ public class Constructor {
 		}
 	}
 	
+	
+	/**
+	 * Contains the placement rules for datapoint type 21 (Regular case) (ETCS Level 2).
+	 * 
+	 * 
+	 * @param currentObject DOM element of the reference point for the datapoint
+	 */
 	private void placeDp21Regular(Element currentObject) {
 		Element containerElement = ppm.getContainerElement();
 		String signalId = currentObject.getChild("Identitaet").getChild("Wert").getText();
@@ -1024,6 +1289,12 @@ public class Constructor {
 		}
 	}
 	
+	
+	/**
+	 * Contains the placement rules for datapoint type 22 (Back-to-back case) (ETCS Level 2).
+	 * Two signals are considered as back-to-back if they are facing in opposite direction
+	 * and have a distance of less than 500 mm.
+	 */
 	private void placeDp22() {
 		Logger.log("placing DP 22...");
 		List<Element> alreadyHandledSignals = new ArrayList<Element>();
@@ -1109,6 +1380,13 @@ public class Constructor {
 		}
 	}
 	
+	
+	/**
+	 * Contains the placement rules for datapoint type 22 (Regular case) (ETCS Level 2).
+	 * 
+	 * 
+	 * @param currentObject DOM element of the reference point for the datapoint
+	 */
 	private void placeDp22Regular(Element currentObject) {
 		Element containerElement = ppm.getContainerElement();
 		String signalId = currentObject.getChild("Identitaet").getChild("Wert").getText();
@@ -1135,6 +1413,12 @@ public class Constructor {
 		}
 	}
 	
+	
+	/**
+	 * Contains the placement rules for datapoint type 23 (Special cases) (ETCS Level 2).
+	 * These special rules will be applied if there are two signals, facing towards each other
+	 * and with a distance between 250 m and 350 m or between 350 m and 700 m.
+	 */
 	private void placeDp23() {
 		Logger.log("placing DP 23...");
 		List<Element> alreadyHandledSignals = new ArrayList<Element>();
@@ -1214,6 +1498,13 @@ public class Constructor {
 		}
 	}
 	
+	
+	/**
+	 * Contains the placement rules for datapoint type 23 (Regular case) (ETCS Level 2).
+	 * 
+	 * 
+	 * @param currentObject DOM element of the reference point for the datapoint
+	 */
 	private void placeDp23Regular(Element currentObject) {
 		Element containerElement = ppm.getContainerElement();
 		String signalId = currentObject.getChild("Identitaet").getChild("Wert").getText();
@@ -1241,6 +1532,10 @@ public class Constructor {
 		}
 	}
 	
+	
+	/**
+	 * Contains the placement rules for datapoint type 24 (ETCS Level 2).
+	 */
 	private void placeDp24() {
 		Logger.log("placing DP 24...");
 		Element containerElement = ppm.getContainerElement();
@@ -1296,10 +1591,18 @@ public class Constructor {
 		}
 	}
 	
+	
+	/**
+	 * Contains the placement rules for datapoint type 25 (Faulty switch use case) (ETCS Level 2).
+	 */
 	private void placeDp25FaultySwitch() {
 		Logger.log("placing DP 25 (faulty switch)...");
 	}
 	
+	
+	/**
+	 * Contains the placement rules for datapoint type 25 (Gap fill use case) (ETCS Level 2).
+	 */
 	private void placeDp25GapFill() {
 		Logger.log("placing DP 25 (gap fill)...");
 		boolean finished = false;
@@ -1383,6 +1686,10 @@ public class Constructor {
 		}
 	}
 	
+	
+	/**
+	 * Contains the placement rules for datapoint type 26 (ETCS Level 2).
+	 */
 	private void placeDp26() {
 		Logger.log("placing DP 26...");
 		Element containerElement = ppm.getContainerElement();
@@ -1505,6 +1812,10 @@ public class Constructor {
 		}
 	}
 	
+	
+	/**
+	 * Contains the placement rules for datapoint type 28 (ETCS Level 2).
+	 */
 	private void placeDp28() {
 		Logger.log("placing DP 28...");
 		Element containerElement = ppm.getContainerElement();
