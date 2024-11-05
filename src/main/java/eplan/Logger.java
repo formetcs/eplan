@@ -19,6 +19,14 @@ public class Logger {
 	private static String logfile = null;
 	private static String messageString = "";
 	
+	
+	/**
+	 * Disable instance creation.
+	 */
+	private Logger() {
+		
+	}
+	
 	/**
 	 * Enable logging of general messages.
 	 * 

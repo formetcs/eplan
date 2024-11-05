@@ -49,6 +49,14 @@ public class PlanProModel {
 	
 	
 	/**
+	 * Create a new PlanProModel instance.
+	 */
+	public PlanProModel() {
+		doc = null;
+	}
+	
+	
+	/**
 	 * Read the DOM tree from an XML file.
 	 * 
 	 * 

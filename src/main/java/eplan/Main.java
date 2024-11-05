@@ -20,7 +20,15 @@ import org.jdom2.JDOMException;
  *
  */
 public class Main {
+	
+	/**
+	 * Disable instance creation.
+	 */
+	private Main() {
+		
+	}
 
+	
 	/**
 	 * Entry point of the program.
 	 * 

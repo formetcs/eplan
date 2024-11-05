@@ -38,6 +38,14 @@ public abstract class AbstractComparisonCondition implements Evaluable {
 	
 	
 	/**
+	 * Default constructor.
+	 */
+	protected AbstractComparisonCondition() {
+		
+	}
+	
+	
+	/**
 	 * Retrieve the value at the end of a path, starting from the given DOM element.
 	 * The element names in the path must be separated with a "/" character.
 	 * 
