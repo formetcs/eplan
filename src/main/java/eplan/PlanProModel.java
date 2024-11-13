@@ -16,6 +16,10 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
+import eplan.conditions.ConstantCondition;
+import eplan.conditions.Evaluable;
+import eplan.conditions.TypeCondition;
+
 /**
  * Representation of the PlanPro data model.
  * 
@@ -752,7 +756,7 @@ public class PlanProModel {
 	
 	/**
 	 * Finds the Punkt_Objekt which immediately follows a given Punkt_Objekt in a specified search direction.
-	 * The condition argument must be an object implementing the {@link eplan.Evaluable} interface.
+	 * The condition argument must be an object implementing the {@link eplan.conditions.Evaluable} interface.
 	 * It defines conditions the searched object must satisfy.
 	 * The orientation argument describes the relative orientation the found object and the starting object should have.
 	 * If the forward value is true, the search follows the effective direction of the starting Punkt_Objekt, otherwise it searches backwards
@@ -760,7 +764,7 @@ public class PlanProModel {
 	 * If the track branches, all directly reachable elements and their path information are returned.
 	 * 
 	 * @param startpos the starting Punkt_Objekt
-	 * @param condition an object implementing {@link eplan.Evaluable}, restricting the search to these conditions
+	 * @param condition an object implementing {@link eplan.conditions.Evaluable}, restricting the search to these conditions
 	 * @param orientation a {@link eplan.PlanProModel.Direction} enum value, describing the relative orientation of the objects
 	 * @param forward if the search direction should be the same as the effective direction of the starting Punkt_Objekt
 	 * @return a list of {@link eplan.NextPunktObjektPathResult} objects, containing element and path information

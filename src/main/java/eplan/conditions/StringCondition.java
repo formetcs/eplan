@@ -1,4 +1,4 @@
-package eplan;
+package eplan.conditions;
 
 import org.jdom2.Element;
 

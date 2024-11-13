@@ -1,4 +1,4 @@
-package eplan;
+package eplan.conditions;
 
 import java.util.ArrayList;
 import java.util.List;

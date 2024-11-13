@@ -1,9 +1,11 @@
-package eplan;
+package eplan.conditions;
 
 import java.util.List;
 
 import org.jdom2.Element;
 import org.jdom2.Namespace;
+
+import eplan.PlanProModel;
 
 /**
  * Condition class to test if a DOM element is a signal with a given signal aspect.

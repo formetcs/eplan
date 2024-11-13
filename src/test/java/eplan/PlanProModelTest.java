@@ -18,6 +18,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import eplan.PlanProModel.Direction;
+import eplan.conditions.Evaluable;
+import eplan.conditions.TypeCondition;
 
 class PlanProModelTest {
 	

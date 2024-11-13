@@ -10,8 +10,16 @@ import java.util.UUID;
 
 import org.jdom2.Element;
 
-import eplan.AbstractComparisonCondition.Operator;
 import eplan.PlanProModel.Direction;
+import eplan.conditions.ConditionConjunction;
+import eplan.conditions.ConditionDisjunction;
+import eplan.conditions.Evaluable;
+import eplan.conditions.ExistenceCondition;
+import eplan.conditions.IntegerCondition;
+import eplan.conditions.SignalAspectCondition;
+import eplan.conditions.StringCondition;
+import eplan.conditions.TypeCondition;
+import eplan.conditions.AbstractComparisonCondition.Operator;
 
 /**
  * Class containing the main placement algorithms.
