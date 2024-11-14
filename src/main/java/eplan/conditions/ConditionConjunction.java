@@ -20,15 +20,15 @@ public class ConditionConjunction implements Evaluable {
 	/**
 	 * The list of conditions that should be evaluated.
 	 */
-	private List<Evaluable> conditionList;
+	private List conditionList;
 	
 	/**
 	 * Creates a new ConditionConjunction.
 	 * 
 	 * @param evaluables a variable number of conditions that should be evaluated
 	 */
-	public ConditionConjunction(Evaluable...evaluables) {
-		conditionList = new ArrayList<Evaluable>();
+	public ConditionConjunction(Evaluable[] evaluables) {
+		conditionList = new ArrayList();
 		for(Evaluable e : evaluables) {
 			addCondition(e);
 		}
@@ -43,10 +43,15 @@ public class ConditionConjunction implements Evaluable {
 		conditionList.add(e);
 	}
 
-	@Override
+	
+	
+	
+	
+	
+
 	public boolean evaluate(Element e) {
 		for(int i = 0; i < conditionList.size(); i++) {
-			if(!conditionList.get(i).evaluate(e)) {
+			if(!((Evaluable)conditionList.get(i)).evaluate(e)) {
 				return false;
 			}
 		}

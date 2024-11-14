@@ -20,15 +20,15 @@ public class ConditionDisjunction implements Evaluable {
 	/**
 	 * The list of conditions that should be evaluated.
 	 */
-	private List<Evaluable> conditionList;
+	private List conditionList;
 	
 	/**
 	 * Creates a new ConditionDisjunction.
 	 * 
 	 * @param evaluables a variable number of conditions that should be evaluated
 	 */
-	public ConditionDisjunction(Evaluable...evaluables) {
-		conditionList = new ArrayList<Evaluable>();
+	public ConditionDisjunction(Evaluable[] evaluables) {
+		conditionList = new ArrayList();
 		for(Evaluable e : evaluables) {
 			addCondition(e);
 		}
@@ -43,10 +43,15 @@ public class ConditionDisjunction implements Evaluable {
 		conditionList.add(e);
 	}
 
-	@Override
+	
+	
+	
+	
+	
+
 	public boolean evaluate(Element e) {
 		for(int i = 0; i < conditionList.size(); i++) {
-			if(conditionList.get(i).evaluate(e)) {
+			if(((Evaluable)conditionList.get(i)).evaluate(e)) {
 				return true;
 			}
 		}

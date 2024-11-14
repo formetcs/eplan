@@ -16,7 +16,6 @@ import eplan.conditions.ConditionDisjunction;
 import eplan.conditions.Evaluable;
 import eplan.conditions.ExistenceCondition;
 import eplan.conditions.IntegerCondition;
-import eplan.conditions.SignalAspectCondition;
 import eplan.conditions.StringCondition;
 import eplan.conditions.TypeCondition;
 import eplan.conditions.AbstractComparisonCondition.Operator;
@@ -497,8 +496,8 @@ public class Constructor {
 		Evaluable typeCond = new TypeCondition("W_Kr_Gsp_Komponente");
 		Evaluable wExistCond = new ExistenceCondition("Zungenpaar");
 		Evaluable krExistCond = new ExistenceCondition("Kreuzung");
-		ConditionDisjunction disjunc = new ConditionDisjunction(wExistCond, krExistCond);
-		ConditionConjunction conjunc = new ConditionConjunction(typeCond, disjunc);
+		ConditionDisjunction disjunc = new ConditionDisjunction(new Evaluable[] {wExistCond, krExistCond});
+		ConditionConjunction conjunc = new ConditionConjunction(new Evaluable[] {typeCond, disjunc});
 		while(true) {
 			List<NextPunktObjektPathResult> tempWKrList = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(signal), conjunc, Direction.BOTH, true);
 			NextPunktObjektPathResult tempWKr = NextPunktObjektPathResult.nearest(tempWKrList);
@@ -602,8 +601,8 @@ public class Constructor {
 		Evaluable typeCond = new TypeCondition("W_Kr_Gsp_Komponente");
 		Evaluable wExistCond = new ExistenceCondition("Zungenpaar");
 		Evaluable krExistCond = new ExistenceCondition("Kreuzung");
-		ConditionDisjunction disjunc = new ConditionDisjunction(wExistCond, krExistCond);
-		ConditionConjunction conjunc = new ConditionConjunction(typeCond, disjunc);
+		ConditionDisjunction disjunc = new ConditionDisjunction(new Evaluable[] {wExistCond, krExistCond});
+		ConditionConjunction conjunc = new ConditionConjunction(new Evaluable[] {typeCond, disjunc});
 		
 		List<NextPunktObjektPathResult> resultlist = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(signal), conjunc, Direction.BOTH, false);
 		if(resultlist.isEmpty()) { // no switch found -> use line speed
@@ -1049,7 +1048,7 @@ public class Constructor {
 				String signalId = currentObject.getChild("Identitaet").getChild("Wert").getText();
 				Evaluable cond1 = new StringCondition("Signal_Real/Signal_Real_Aktiv/Signal_Funktion/Wert", Operator.EQUAL, "Block_Signal");
 				Evaluable cond2 = new StringCondition("Signal_Real/Signal_Real_Aktiv/Signal_Funktion/Wert", Operator.EQUAL, "Einfahr_Signal");
-				ConditionDisjunction disjunc = new ConditionDisjunction(cond1, cond2);
+				ConditionDisjunction disjunc = new ConditionDisjunction(new Evaluable[] {cond1, cond2});
 				List<NextPunktObjektPathResult> otherSignalsForward = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), disjunc, Direction.OPPOSITE, true);
 				List<NextPunktObjektPathResult> otherSignalsBackward = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), disjunc, Direction.OPPOSITE, false);
 				boolean alreadyPlacedDp = false;
@@ -1194,7 +1193,7 @@ public class Constructor {
 				Evaluable cond6 = new StringCondition("Signal_Real/Signal_Real_Aktiv/Signal_Funktion/Wert", Operator.EQUAL, "Gruppenzwischen_Signal");
 				Evaluable cond7 = new StringCondition("Signal_Real/Signal_Real_Aktiv/Signal_Funktion/Wert", Operator.EQUAL, "Zugdeckungs_Signal");
 				Evaluable cond8 = new StringCondition("Signal_Real/Signal_Real_Aktiv/Signal_Funktion/Wert", Operator.EQUAL, "Zwischen_Signal");
-				ConditionDisjunction disjunc = new ConditionDisjunction(cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8);
+				ConditionDisjunction disjunc = new ConditionDisjunction(new Evaluable[] {cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8});
 				List<NextPunktObjektPathResult> otherSignalsForward = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), disjunc, Direction.OPPOSITE, true);
 				List<NextPunktObjektPathResult> otherSignalsBackward = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), disjunc, Direction.OPPOSITE, false);
 				boolean alreadyPlacedDp = false;
@@ -1458,7 +1457,7 @@ public class Constructor {
 				Evaluable cond3 = new StringCondition("Signal_Real/Signal_Real_Aktiv_Schirm/Signal_Art/Wert", Operator.EQUAL, "Mehrabschnittssignal");
 				Evaluable cond4 = new StringCondition("Signal_Real/Signal_Real_Aktiv_Schirm/Signal_Art/Wert", Operator.EQUAL, "Mehrabschnittssperrsignal");
 				Evaluable cond5 = new StringCondition("Signal_Real/Signal_Real_Aktiv_Schirm/Signal_Art/Wert", Operator.EQUAL, "Zugdeckungssignal");
-				ConditionDisjunction disjunc = new ConditionDisjunction(cond1, cond2, cond3, cond4, cond5);
+				ConditionDisjunction disjunc = new ConditionDisjunction(new Evaluable[] {cond1, cond2, cond3, cond4, cond5});
 				List<NextPunktObjektPathResult> otherSignals = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), disjunc, Direction.OPPOSITE, false);
 				if(otherSignals.size() > 0) {
 					for(int i1 = 0; i1 < otherSignals.size(); i1++) {
@@ -1633,7 +1632,7 @@ public class Constructor {
 				Evaluable cond3 = new IntegerCondition("DP_Typ/DP_Typ_GETCS/DP_Typ_ETCS/Wert", Operator.NOT_EQUAL, 34);
 				Evaluable cond4 = new IntegerCondition("DP_Typ/DP_Typ_GETCS/DP_Typ_ETCS/Wert", Operator.NOT_EQUAL, 36);
 				Evaluable cond5 = new IntegerCondition("DP_Typ/DP_Typ_GETCS/DP_Typ_ETCS/Wert", Operator.NOT_EQUAL, 37);
-				ConditionConjunction conjunc = new ConditionConjunction(typeCond, cond1, cond2, cond3, cond4, cond5);
+				ConditionConjunction conjunc = new ConditionConjunction(new Evaluable[] {typeCond, cond1, cond2, cond3, cond4, cond5});
 				List<NextPunktObjektPathResult> nextlistForward = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), conjunc, Direction.BOTH, true);
 				List<NextPunktObjektPathResult> nextlistReverse = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), conjunc, Direction.BOTH, false);
 				List<Element> nodelist = null;
@@ -1734,7 +1733,7 @@ public class Constructor {
 				Evaluable cond3 = new StringCondition("Signal_Real/Signal_Real_Aktiv_Schirm/Signal_Art/Wert", Operator.EQUAL, "Mehrabschnittssignal");
 				Evaluable cond4 = new StringCondition("Signal_Real/Signal_Real_Aktiv_Schirm/Signal_Art/Wert", Operator.EQUAL, "Mehrabschnittssperrsignal");
 				Evaluable cond5 = new StringCondition("Signal_Real/Signal_Real_Aktiv_Schirm/Signal_Art/Wert", Operator.EQUAL, "Zugdeckungssignal");
-				ConditionDisjunction disjunc = new ConditionDisjunction(cond1, cond2, cond3, cond4, cond5);
+				ConditionDisjunction disjunc = new ConditionDisjunction(new Evaluable[] {cond1, cond2, cond3, cond4, cond5});
 				List<NextPunktObjektPathResult> signallist = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), disjunc, Direction.EQUAL, false);
 				NextPunktObjektPathResult nearestsignal = NextPunktObjektPathResult.nearest(signallist);
 				if(nearestsignal != null ) {
