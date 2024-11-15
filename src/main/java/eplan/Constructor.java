@@ -33,7 +33,7 @@ public class Constructor {
 	private String[] addlist;
 	private String[] removelist;
 	private boolean compatibilityMode;
-	List<Element> alreadyHandledDp24;
+	List alreadyHandledDp24;
 	
 	/**
 	 * Set the ETCS level which should be used for planning.
@@ -97,7 +97,7 @@ public class Constructor {
 		this.addlist = null;
 		this.removelist = null;
 		this.compatibilityMode = false;
-		alreadyHandledDp24 = new ArrayList<Element>();
+		alreadyHandledDp24 = new ArrayList();
 	}
 	
 	
@@ -291,15 +291,15 @@ public class Constructor {
 	 */
 	private Element createPunktObjektStreckeElement(PunktObjekt referencePoint) {
 		Evaluable poCond = new ExistenceCondition("Punkt_Objekt_Strecke");
-		List<NextPunktObjektPathResult> forwardElementList = ppm.getNextPunktObjektPaths(referencePoint, poCond, Direction.BOTH, true);
+		List forwardElementList = ppm.getNextPunktObjektPaths(referencePoint, poCond, Direction.BOTH, true);
 		Element forwardElement = null;
 		if(forwardElementList.size() > 0) {
-			forwardElement = forwardElementList.get(0).punktObjektElement;
+			forwardElement = ((NextPunktObjektPathResult) forwardElementList.get(0)).punktObjektElement;
 		}
-		List<NextPunktObjektPathResult> backwardElementList = ppm.getNextPunktObjektPaths(referencePoint, poCond, Direction.BOTH, false);
+		List backwardElementList = ppm.getNextPunktObjektPaths(referencePoint, poCond, Direction.BOTH, false);
 		Element backwardElement = null;
 		if(backwardElementList.size() > 0) {
-			backwardElement = backwardElementList.get(0).punktObjektElement;
+			backwardElement = ((NextPunktObjektPathResult) backwardElementList.get(0)).punktObjektElement;
 		}
 		if(forwardElement == null || backwardElement == null) {
 			return null;
@@ -308,16 +308,16 @@ public class Constructor {
 		String idStreckeRefPoint = "";
 		String streckeKmRefPoint = "";
 		
-		List<Element> fwStreckenList = forwardElement.getChildren("Punkt_Objekt_Strecke");
+		List fwStreckenList = forwardElement.getChildren("Punkt_Objekt_Strecke");
 		for(int i = 0; i < fwStreckenList.size(); i++) {
-			List<Element> bwStreckenList = backwardElement.getChildren("Punkt_Objekt_Strecke");
+			List bwStreckenList = backwardElement.getChildren("Punkt_Objekt_Strecke");
 			for(int j = 0; j < bwStreckenList.size(); j++) {
-				String fwStreckenId = fwStreckenList.get(i).getChild("ID_Strecke").getChild("Wert").getText();
-				String bwStreckenId = bwStreckenList.get(j).getChild("ID_Strecke").getChild("Wert").getText();
+				String fwStreckenId = ((Element) fwStreckenList.get(i)).getChild("ID_Strecke").getChild("Wert").getText();
+				String bwStreckenId = ((Element) bwStreckenList.get(j)).getChild("ID_Strecke").getChild("Wert").getText();
 				if(fwStreckenId.equals(bwStreckenId)) {
 					idStreckeRefPoint = fwStreckenId;
-					String fwStreckenKm = fwStreckenList.get(i).getChild("Strecke_Km").getChild("Wert").getText().replace(',', '.');
-					String bwStreckenKm = bwStreckenList.get(j).getChild("Strecke_Km").getChild("Wert").getText().replace(',', '.');
+					String fwStreckenKm = ((Element) fwStreckenList.get(i)).getChild("Strecke_Km").getChild("Wert").getText().replace(',', '.');
+					String bwStreckenKm = ((Element) bwStreckenList.get(j)).getChild("Strecke_Km").getChild("Wert").getText().replace(',', '.');
 					double fwStreckenKmValue = Double.parseDouble(fwStreckenKm);
 					double bwStreckenKmValue = Double.parseDouble(bwStreckenKm);
 					boolean increasingKm = true;
@@ -499,7 +499,7 @@ public class Constructor {
 		ConditionDisjunction disjunc = new ConditionDisjunction(new Evaluable[] {wExistCond, krExistCond});
 		ConditionConjunction conjunc = new ConditionConjunction(new Evaluable[] {typeCond, disjunc});
 		while(true) {
-			List<NextPunktObjektPathResult> tempWKrList = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(signal), conjunc, Direction.BOTH, true);
+			List tempWKrList = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(signal), conjunc, Direction.BOTH, true);
 			NextPunktObjektPathResult tempWKr = NextPunktObjektPathResult.nearest(tempWKrList);
 			if(tempWKr == null) {
 				return -1;
@@ -557,7 +557,7 @@ public class Constructor {
 		}
 		
 		Evaluable aspectCond = new SignalAspectCondition(ppm, "Ra_10");
-		List<NextPunktObjektPathResult> ra10List = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(signal), aspectCond, Direction.OPPOSITE, true);
+		List ra10List = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(signal), aspectCond, Direction.OPPOSITE, true);
 		NextPunktObjektPathResult nearestRa10 = NextPunktObjektPathResult.nearest(ra10List);
 		if(nearestRa10 != null) {
 			int ra10dist = nearestRa10.distance;
@@ -604,12 +604,12 @@ public class Constructor {
 		ConditionDisjunction disjunc = new ConditionDisjunction(new Evaluable[] {wExistCond, krExistCond});
 		ConditionConjunction conjunc = new ConditionConjunction(new Evaluable[] {typeCond, disjunc});
 		
-		List<NextPunktObjektPathResult> resultlist = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(signal), conjunc, Direction.BOTH, false);
+		List resultlist = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(signal), conjunc, Direction.BOTH, false);
 		if(resultlist.isEmpty()) { // no switch found -> use line speed
 			return 160;
 		}
 		
-		NextPunktObjektPathResult resultitem = resultlist.get(0); // Only first element, others have same position
+		NextPunktObjektPathResult resultitem = ((NextPunktObjektPathResult) resultlist.get(0)); // Only first element, others have same position
 		Element tempswitch = resultitem.punktObjektElement;
 		
 		int finalDistance = ppm.calculateDistance(PunktObjekt.valueOf(signal), PunktObjekt.valueOf(tempswitch));
@@ -748,9 +748,9 @@ public class Constructor {
 	private void placeDpHs() {
 		Logger.log("placing DP HS...");
 		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		List objectList = containerElement.getChildren();
 		for(int i = 0; i < objectList.size(); i++) {
-			Element currentObject = objectList.get(i);
+			Element currentObject = ((Element) objectList.get(i));
 			if(!currentObject.getName().equals("Signal")) {
 				continue;
 			}
@@ -764,9 +764,9 @@ public class Constructor {
 			if(signalArt.equals("Hauptsignal") || signalArt.equals("Hauptsperrsignal")) {
 				Logger.log("-Signal " + printSignalBezeichnung(currentObject) + " (km " + printKmValue(currentObject) + ")");
 				String signalId = currentObject.getChild("Identitaet").getChild("Wert").getText();
-				List<PunktObjekt> nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), -3000);
+				List nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), -3000);
 				for(int j = 0; j < nextposlist.size(); j++) {
-					PunktObjekt nextpos = nextposlist.get(j);
+					PunktObjekt nextpos = ((PunktObjekt) nextposlist.get(j));
 					PunktObjektTopKante nextpotk = nextpos.punktObjektTopKante[0];
 					Element dp = new Element("Datenpunkt");
 					String guid = generateGuid();
@@ -796,9 +796,9 @@ public class Constructor {
 	private void placeDpMs() {
 		Logger.log("placing DP MS...");
 		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		List objectList = containerElement.getChildren();
 		for(int i = 0; i < objectList.size(); i++) {
-			Element currentObject = objectList.get(i);
+			Element currentObject = ((Element) objectList.get(i));
 			if(!currentObject.getName().equals("Signal")) {
 				continue;
 			}
@@ -812,9 +812,9 @@ public class Constructor {
 			if(signalArt.equals("Mehrabschnittssignal") || signalArt.equals("Mehrabschnittssperrsignal")) {
 				Logger.log("-Signal " + printSignalBezeichnung(currentObject) + " (km " + printKmValue(currentObject) + ")");
 				String signalId = currentObject.getChild("Identitaet").getChild("Wert").getText();
-				List<PunktObjekt> nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), -3000);
+				List nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), -3000);
 				for(int j = 0; j < nextposlist.size(); j++) {
-					PunktObjekt nextpos = nextposlist.get(j);
+					PunktObjekt nextpos = ((PunktObjekt) nextposlist.get(j));
 					PunktObjektTopKante nextpotk = nextpos.punktObjektTopKante[0];
 					Element dp = new Element("Datenpunkt");
 					String guid = generateGuid();
@@ -844,9 +844,9 @@ public class Constructor {
 	private void placeDpVs() {
 		Logger.log("placing DP VS...");
 		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		List objectList = containerElement.getChildren();
 		for(int i = 0; i < objectList.size(); i++) {
-			Element currentObject = objectList.get(i);
+			Element currentObject = ((Element) objectList.get(i));
 			if(!currentObject.getName().equals("Signal")) {
 				continue;
 			}
@@ -860,9 +860,9 @@ public class Constructor {
 			if(signalArt.equals("Vorsignal")) {
 				Logger.log("-Signal " + printSignalBezeichnung(currentObject) + " (km " + printKmValue(currentObject) + ")");
 				String signalId = currentObject.getChild("Identitaet").getChild("Wert").getText();
-				List<PunktObjekt> nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), -3000);
+				List nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), -3000);
 				for(int j = 0; j < nextposlist.size(); j++) {
-					PunktObjekt nextpos = nextposlist.get(j);
+					PunktObjekt nextpos = ((PunktObjekt) nextposlist.get(j));
 					PunktObjektTopKante nextpotk = nextpos.punktObjektTopKante[0];
 					Element dp = new Element("Datenpunkt");
 					String guid = generateGuid();
@@ -892,9 +892,9 @@ public class Constructor {
 	private void placeDpVw() {
 		Logger.log("placing DP VW...");
 		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		List objectList = containerElement.getChildren();
 		for(int i = 0; i < objectList.size(); i++) {
-			Element currentObject = objectList.get(i);
+			Element currentObject = ((Element) objectList.get(i));
 			if(!currentObject.getName().equals("Signal")) {
 				continue;
 			}
@@ -908,9 +908,9 @@ public class Constructor {
 			if(signalArt.equals("Vorsignalwiederholer")) {
 				Logger.log("-Signal " + printSignalBezeichnung(currentObject) + " (km " + printKmValue(currentObject) + ")");
 				String signalId = currentObject.getChild("Identitaet").getChild("Wert").getText();
-				List<PunktObjekt> nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), -3000);
+				List nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), -3000);
 				for(int j = 0; j < nextposlist.size(); j++) {
-					PunktObjekt nextpos = nextposlist.get(j);
+					PunktObjekt nextpos = ((PunktObjekt) nextposlist.get(j));
 					PunktObjektTopKante nextpotk = nextpos.punktObjektTopKante[0];
 					Element dp = new Element("Datenpunkt");
 					String guid = generateGuid();
@@ -940,9 +940,9 @@ public class Constructor {
 	private void placeDpAw() {
 		Logger.log("placing DP AW...");
 		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		List objectList = containerElement.getChildren();
 		for(int i = 0; i < objectList.size(); i++) {
-			Element currentObject = objectList.get(i);
+			Element currentObject = ((Element) objectList.get(i));
 			if(!currentObject.getName().equals("Signal")) {
 				continue;
 			}
@@ -956,9 +956,9 @@ public class Constructor {
 			if(signalArt.equals("Hauptsignal") || signalArt.equals("Hauptsperrsignal") || signalArt.equals("Mehrabschnittssignal") || signalArt.equals("Mehrabschnittssperrsignal")) {
 				Logger.log("-Signal " + printSignalBezeichnung(currentObject) + " (km " + printKmValue(currentObject) + ")");
 				String signalId = currentObject.getChild("Identitaet").getChild("Wert").getText();
-				List<PunktObjekt> nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), -250000);
+				List nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), -250000);
 				for(int j = 0; j < nextposlist.size(); j++) {
-					PunktObjekt nextpos = nextposlist.get(j);
+					PunktObjekt nextpos = ((PunktObjekt) nextposlist.get(j));
 					PunktObjektTopKante nextpotk = nextpos.punktObjektTopKante[0];
 					Element dp = new Element("Datenpunkt");
 					String guid = generateGuid();
@@ -989,16 +989,16 @@ public class Constructor {
 	private void placeDp9() {
 		Logger.log("placing DP 9...");
 		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		List objectList = containerElement.getChildren();
 		for(int i = 0; i < objectList.size(); i++) {
-			Element currentObject = objectList.get(i);
+			Element currentObject = ((Element) objectList.get(i));
 			if(!currentObject.getName().equals("Datenpunkt")) {
 				continue;
 			}
 			Element dptypgetcs = currentObject.getChild("DP_Typ").getChild("DP_Typ_GETCS");
-			List<Element> typelist = dptypgetcs.getChildren("DP_Typ_ETCS");
+			List typelist = dptypgetcs.getChildren("DP_Typ_ETCS");
 			for(int j = 0; j < typelist.size(); j++) {
-				Element currentType = typelist.get(j);
+				Element currentType = ((Element) typelist.get(j));
 				int dpType = Integer.parseInt(currentType.getChild("Wert").getText());
 				if(dpType != 28) {
 					continue;
@@ -1023,11 +1023,11 @@ public class Constructor {
 	 */
 	private void placeDp20() {
 		Logger.log("placing DP 20...");
-		List<Element> alreadyHandledSignals = new ArrayList<Element>();
+		List alreadyHandledSignals = new ArrayList();
 		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		List objectList = containerElement.getChildren();
 		for(int i = 0; i < objectList.size(); i++) {
-			Element currentObject = objectList.get(i);
+			Element currentObject = ((Element) objectList.get(i));
 			if(!currentObject.getName().equals("Signal")) {
 				continue;
 			}
@@ -1049,11 +1049,11 @@ public class Constructor {
 				Evaluable cond1 = new StringCondition("Signal_Real/Signal_Real_Aktiv/Signal_Funktion/Wert", Operator.EQUAL, "Block_Signal");
 				Evaluable cond2 = new StringCondition("Signal_Real/Signal_Real_Aktiv/Signal_Funktion/Wert", Operator.EQUAL, "Einfahr_Signal");
 				ConditionDisjunction disjunc = new ConditionDisjunction(new Evaluable[] {cond1, cond2});
-				List<NextPunktObjektPathResult> otherSignalsForward = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), disjunc, Direction.OPPOSITE, true);
-				List<NextPunktObjektPathResult> otherSignalsBackward = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), disjunc, Direction.OPPOSITE, false);
+				List otherSignalsForward = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), disjunc, Direction.OPPOSITE, true);
+				List otherSignalsBackward = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), disjunc, Direction.OPPOSITE, false);
 				boolean alreadyPlacedDp = false;
 				for(int i1 = 0; i1 < otherSignalsForward.size(); i1++) {
-					NextPunktObjektPathResult current = otherSignalsForward.get(i1);
+					NextPunktObjektPathResult current = ((NextPunktObjektPathResult) otherSignalsForward.get(i1));
 					if (current.distance <= 500) {
 						// place DP 20 on the common position of both signals, each balise 1.5 m in front of one signal
 						PunktObjekt target = ppm.calculatePositionOnPath(PunktObjekt.valueOf(currentObject), current.topKantenList, 1500, false);
@@ -1082,7 +1082,7 @@ public class Constructor {
 					}
 				}
 				for(int i1 = 0; !alreadyPlacedDp && i1 < otherSignalsBackward.size(); i1++) {
-					NextPunktObjektPathResult current = otherSignalsBackward.get(i1);
+					NextPunktObjektPathResult current = ((NextPunktObjektPathResult) otherSignalsBackward.get(i1));
 					if (current.distance <= 500) {
 						// place DP 20 on the common position of both signals, each balise 1.5 m in front of one signal
 						PunktObjekt target = ppm.calculatePositionOnPath(PunktObjekt.valueOf(currentObject), current.topKantenList, 1500, false);
@@ -1127,9 +1127,9 @@ public class Constructor {
 	private void placeDp20Regular(Element currentObject) {
 		Element containerElement = ppm.getContainerElement();
 		String signalId = currentObject.getChild("Identitaet").getChild("Wert").getText();
-		List<PunktObjekt> nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), -6000);
+		List nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), -6000);
 		for(int j = 0; j < nextposlist.size(); j++) {
-			PunktObjekt nextpos = nextposlist.get(j);
+			PunktObjekt nextpos = ((PunktObjekt) nextposlist.get(j));
 			PunktObjektTopKante nextpotk = nextpos.punktObjektTopKante[0];
 			Element dp = new Element("Datenpunkt");
 			String guid = generateGuid();
@@ -1159,11 +1159,11 @@ public class Constructor {
 	 */
 	private void placeDp21() {
 		Logger.log("placing DP 21...");
-		List<Element> alreadyHandledSignals = new ArrayList<Element>();
+		List alreadyHandledSignals = new ArrayList();
 		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		List objectList = containerElement.getChildren();
 		for(int i = 0; i < objectList.size(); i++) {
-			Element currentObject = objectList.get(i);
+			Element currentObject = ((Element) objectList.get(i));
 			if(!currentObject.getName().equals("Signal")) {
 				continue;
 			}
@@ -1194,11 +1194,11 @@ public class Constructor {
 				Evaluable cond7 = new StringCondition("Signal_Real/Signal_Real_Aktiv/Signal_Funktion/Wert", Operator.EQUAL, "Zugdeckungs_Signal");
 				Evaluable cond8 = new StringCondition("Signal_Real/Signal_Real_Aktiv/Signal_Funktion/Wert", Operator.EQUAL, "Zwischen_Signal");
 				ConditionDisjunction disjunc = new ConditionDisjunction(new Evaluable[] {cond1, cond2, cond3, cond4, cond5, cond6, cond7, cond8});
-				List<NextPunktObjektPathResult> otherSignalsForward = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), disjunc, Direction.OPPOSITE, true);
-				List<NextPunktObjektPathResult> otherSignalsBackward = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), disjunc, Direction.OPPOSITE, false);
+				List otherSignalsForward = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), disjunc, Direction.OPPOSITE, true);
+				List otherSignalsBackward = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), disjunc, Direction.OPPOSITE, false);
 				boolean alreadyPlacedDp = false;
 				for(int i1 = 0; i1 < otherSignalsForward.size(); i1++) {
-					NextPunktObjektPathResult current = otherSignalsForward.get(i1);
+					NextPunktObjektPathResult current = ((NextPunktObjektPathResult) otherSignalsForward.get(i1));
 					if (current.distance <= 500) {
 						// place DP 21 on the common position of both signals, each balise 1.5 m in front of one signal
 						PunktObjekt target = ppm.calculatePositionOnPath(PunktObjekt.valueOf(currentObject), current.topKantenList, 1500, false);
@@ -1227,7 +1227,7 @@ public class Constructor {
 					}
 				}
 				for(int i1 = 0; !alreadyPlacedDp && i1 < otherSignalsBackward.size(); i1++) {
-					NextPunktObjektPathResult current = otherSignalsBackward.get(i1);
+					NextPunktObjektPathResult current = ((NextPunktObjektPathResult) otherSignalsBackward.get(i1));
 					if (current.distance <= 500) {
 						// place DP 21 on the common position of both signals, each balise 1.5 m in front of one signal
 						PunktObjekt target = ppm.calculatePositionOnPath(PunktObjekt.valueOf(currentObject), current.topKantenList, 1500, false);
@@ -1272,9 +1272,9 @@ public class Constructor {
 	private void placeDp21Regular(Element currentObject) {
 		Element containerElement = ppm.getContainerElement();
 		String signalId = currentObject.getChild("Identitaet").getChild("Wert").getText();
-		List<PunktObjekt> nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), -6000);
+		List nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), -6000);
 		for(int j = 0; j < nextposlist.size(); j++) {
-			PunktObjekt nextpos = nextposlist.get(j);
+			PunktObjekt nextpos = ((PunktObjekt) nextposlist.get(j));
 			PunktObjektTopKante nextpotk = nextpos.punktObjektTopKante[0];
 			Element dp = new Element("Datenpunkt");
 			String guid = generateGuid();
@@ -1304,11 +1304,11 @@ public class Constructor {
 	 */
 	private void placeDp22() {
 		Logger.log("placing DP 22...");
-		List<Element> alreadyHandledSignals = new ArrayList<Element>();
+		List alreadyHandledSignals = new ArrayList();
 		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		List objectList = containerElement.getChildren();
 		for(int i = 0; i < objectList.size(); i++) {
-			Element currentObject = objectList.get(i);
+			Element currentObject = ((Element) objectList.get(i));
 			if(!currentObject.getName().equals("Signal")) {
 				continue;
 			}
@@ -1321,11 +1321,11 @@ public class Constructor {
 			if(aspectCond.evaluate(currentObject)) {
 				Logger.log("-Signal " + printSignalBezeichnung(currentObject) + " (km " + printKmValue(currentObject) + ")");
 				String signalId = currentObject.getChild("Identitaet").getChild("Wert").getText();
-				List<NextPunktObjektPathResult> otherSignalsForward = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), aspectCond, Direction.OPPOSITE, true);
-				List<NextPunktObjektPathResult> otherSignalsBackward = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), aspectCond, Direction.OPPOSITE, false);
+				List otherSignalsForward = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), aspectCond, Direction.OPPOSITE, true);
+				List otherSignalsBackward = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), aspectCond, Direction.OPPOSITE, false);
 				boolean alreadyPlacedDp = false;
 				for(int i1 = 0; i1 < otherSignalsForward.size(); i1++) {
-					NextPunktObjektPathResult current = otherSignalsForward.get(i1);
+					NextPunktObjektPathResult current = ((NextPunktObjektPathResult) otherSignalsForward.get(i1));
 					if (current.distance <= 500) {
 						// place DP 22 on the common position of both block markers
 						PunktObjekt target = ppm.calculatePositionOnPath(PunktObjekt.valueOf(currentObject), current.topKantenList, 0, false);
@@ -1353,7 +1353,7 @@ public class Constructor {
 					}
 				}
 				for(int i1 = 0; !alreadyPlacedDp && i1 < otherSignalsBackward.size(); i1++) {
-					NextPunktObjektPathResult current = otherSignalsBackward.get(i1);
+					NextPunktObjektPathResult current = ((NextPunktObjektPathResult) otherSignalsBackward.get(i1));
 					if (current.distance <= 500) {
 						// place DP 22 on the common position of both block markers
 						PunktObjekt target = ppm.calculatePositionOnPath(PunktObjekt.valueOf(currentObject), current.topKantenList, 0, false);
@@ -1397,9 +1397,9 @@ public class Constructor {
 	private void placeDp22Regular(Element currentObject) {
 		Element containerElement = ppm.getContainerElement();
 		String signalId = currentObject.getChild("Identitaet").getChild("Wert").getText();
-		List<PunktObjekt> nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), 0);
+		List nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), 0);
 		for(int j = 0; j < nextposlist.size(); j++) {
-			PunktObjekt nextpos = nextposlist.get(j);
+			PunktObjekt nextpos = ((PunktObjekt) nextposlist.get(j));
 			PunktObjektTopKante nextpotk = nextpos.punktObjektTopKante[0];
 			Element dp = new Element("Datenpunkt");
 			String guid = generateGuid();
@@ -1428,11 +1428,11 @@ public class Constructor {
 	 */
 	private void placeDp23() {
 		Logger.log("placing DP 23...");
-		List<Element> alreadyHandledSignals = new ArrayList<Element>();
+		List alreadyHandledSignals = new ArrayList();
 		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		List objectList = containerElement.getChildren();
 		for(int i = 0; i < objectList.size(); i++) {
-			Element currentObject = objectList.get(i);
+			Element currentObject = ((Element) objectList.get(i));
 			if(!currentObject.getName().equals("Signal")) {
 				continue;
 			}
@@ -1458,10 +1458,10 @@ public class Constructor {
 				Evaluable cond4 = new StringCondition("Signal_Real/Signal_Real_Aktiv_Schirm/Signal_Art/Wert", Operator.EQUAL, "Mehrabschnittssperrsignal");
 				Evaluable cond5 = new StringCondition("Signal_Real/Signal_Real_Aktiv_Schirm/Signal_Art/Wert", Operator.EQUAL, "Zugdeckungssignal");
 				ConditionDisjunction disjunc = new ConditionDisjunction(new Evaluable[] {cond1, cond2, cond3, cond4, cond5});
-				List<NextPunktObjektPathResult> otherSignals = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), disjunc, Direction.OPPOSITE, false);
+				List otherSignals = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), disjunc, Direction.OPPOSITE, false);
 				if(otherSignals.size() > 0) {
 					for(int i1 = 0; i1 < otherSignals.size(); i1++) {
-						NextPunktObjektPathResult current = otherSignals.get(i1);
+						NextPunktObjektPathResult current = ((NextPunktObjektPathResult) otherSignals.get(i1));
 						if (current.distance >= 250000 && current.distance <= 350000) {
 							// do not place any DP 23
 							Logger.log("--combining with " + printSignalBezeichnung(current.punktObjektElement) + " (km " + printKmValue(current.punktObjektElement) + ")");
@@ -1515,9 +1515,9 @@ public class Constructor {
 	private void placeDp23Regular(Element currentObject) {
 		Element containerElement = ppm.getContainerElement();
 		String signalId = currentObject.getChild("Identitaet").getChild("Wert").getText();
-		List<PunktObjekt> nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), -300000);
+		List nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), -300000);
 		for(int j = 0; j < nextposlist.size(); j++) {
-			PunktObjekt nextpos = nextposlist.get(j);
+			PunktObjekt nextpos = ((PunktObjekt) nextposlist.get(j));
 			PunktObjektTopKante nextpotk = nextpos.punktObjektTopKante[0];
 			Element dp = new Element("Datenpunkt");
 			String guid = generateGuid();
@@ -1546,9 +1546,9 @@ public class Constructor {
 	private void placeDp24() {
 		Logger.log("placing DP 24...");
 		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		List objectList = containerElement.getChildren();
 		for(int i = 0; i < objectList.size(); i++) {
-			Element currentObject = objectList.get(i);
+			Element currentObject = ((Element) objectList.get(i));
 			if(!currentObject.getName().equals("Signal")) {
 				continue;
 			}
@@ -1572,9 +1572,9 @@ public class Constructor {
 					signalFunc.equals("Zugdeckungs_Signal") || signalFunc.equals("Zwischen_Signal")) {
 				Logger.log("-Signal " + printSignalBezeichnung(currentObject) + " (km " + printKmValue(currentObject) + ")");
 				String signalId = currentObject.getChild("Identitaet").getChild("Wert").getText();
-				List<PunktObjekt> nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), -50000);
+				List nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), -50000);
 				for(int j = 0; j < nextposlist.size(); j++) {
-					PunktObjekt nextpos = nextposlist.get(j);
+					PunktObjekt nextpos = ((PunktObjekt) nextposlist.get(j));
 					PunktObjektTopKante nextpotk = nextpos.punktObjektTopKante[0];
 					Element dp = new Element("Datenpunkt");
 					String guid = generateGuid();
@@ -1616,9 +1616,9 @@ public class Constructor {
 		boolean modified = false;
 		while(!finished) {
 			Element containerElement = ppm.getContainerElement();
-			List<Element> objectList = containerElement.getChildren();
+			List objectList = containerElement.getChildren();
 			for(int i = 0; i < objectList.size() && !modified; i++) {
-				Element currentObject = objectList.get(i);
+				Element currentObject = ((Element) objectList.get(i));
 				if(!currentObject.getName().equals("Datenpunkt")) {
 					continue;
 				}
@@ -1633,14 +1633,14 @@ public class Constructor {
 				Evaluable cond4 = new IntegerCondition("DP_Typ/DP_Typ_GETCS/DP_Typ_ETCS/Wert", Operator.NOT_EQUAL, 36);
 				Evaluable cond5 = new IntegerCondition("DP_Typ/DP_Typ_GETCS/DP_Typ_ETCS/Wert", Operator.NOT_EQUAL, 37);
 				ConditionConjunction conjunc = new ConditionConjunction(new Evaluable[] {typeCond, cond1, cond2, cond3, cond4, cond5});
-				List<NextPunktObjektPathResult> nextlistForward = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), conjunc, Direction.BOTH, true);
-				List<NextPunktObjektPathResult> nextlistReverse = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), conjunc, Direction.BOTH, false);
-				List<Element> nodelist = null;
+				List nextlistForward = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), conjunc, Direction.BOTH, true);
+				List nextlistReverse = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), conjunc, Direction.BOTH, false);
+				List nodelist = null;
 				//Element maxDp = null;
 				int maxDist = 0;
 				boolean searchForward = true;
 				for(int j = 0; j < nextlistForward.size(); j++) {
-					NextPunktObjektPathResult nextDp = nextlistForward.get(j);
+					NextPunktObjektPathResult nextDp = ((NextPunktObjektPathResult) nextlistForward.get(j));
 					int tempdist = nextDp.distance;
 					if(tempdist > maxDist) {
 						maxDist = tempdist;
@@ -1649,7 +1649,7 @@ public class Constructor {
 					}
 				}
 				for(int j = 0; j < nextlistReverse.size(); j++) {
-					NextPunktObjektPathResult nextDp = nextlistReverse.get(j);
+					NextPunktObjektPathResult nextDp = ((NextPunktObjektPathResult) nextlistReverse.get(j));
 					int tempdist = nextDp.distance;
 					if(tempdist > maxDist) {
 						maxDist = tempdist;
@@ -1700,9 +1700,9 @@ public class Constructor {
 	private void placeDp26() {
 		Logger.log("placing DP 26...");
 		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		List objectList = containerElement.getChildren();
 		for(int i = 0; i < objectList.size(); i++) {
-			Element currentObject = objectList.get(i);
+			Element currentObject = ((Element) objectList.get(i));
 			if(!currentObject.getName().equals("Signal")) {
 				continue;
 			}
@@ -1734,7 +1734,7 @@ public class Constructor {
 				Evaluable cond4 = new StringCondition("Signal_Real/Signal_Real_Aktiv_Schirm/Signal_Art/Wert", Operator.EQUAL, "Mehrabschnittssperrsignal");
 				Evaluable cond5 = new StringCondition("Signal_Real/Signal_Real_Aktiv_Schirm/Signal_Art/Wert", Operator.EQUAL, "Zugdeckungssignal");
 				ConditionDisjunction disjunc = new ConditionDisjunction(new Evaluable[] {cond1, cond2, cond3, cond4, cond5});
-				List<NextPunktObjektPathResult> signallist = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), disjunc, Direction.EQUAL, false);
+				List signallist = ppm.getNextPunktObjektPaths(PunktObjekt.valueOf(currentObject), disjunc, Direction.EQUAL, false);
 				NextPunktObjektPathResult nearestsignal = NextPunktObjektPathResult.nearest(signallist);
 				if(nearestsignal != null ) {
 					distPrecedingSignal = nearestsignal.distance;
@@ -1766,9 +1766,9 @@ public class Constructor {
 					double speedfactor = 2.6 + 0.2 * toM_s(vmax);
 					speedfactor *= 1000.0;
 					int additionalDistance = Math.min(distPrecedingSignal - ((int) speedfactor), 100000);
-					List<PunktObjekt> nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), - additionalDistance);
+					List nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), - additionalDistance);
 					for(int j = 0; j < nextposlist.size(); j++) {
-						PunktObjekt nextpos = nextposlist.get(j);
+						PunktObjekt nextpos = ((PunktObjekt) nextposlist.get(j));
 						PunktObjektTopKante nextpotk = nextpos.punktObjektTopKante[0];
 						Element dp = new Element("Datenpunkt");
 						String guid = generateGuid();
@@ -1792,9 +1792,9 @@ public class Constructor {
 				}
 				
 				
-				List<PunktObjekt> nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), - resultingDistance);
+				List nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), - resultingDistance);
 				for(int j = 0; j < nextposlist.size(); j++) {
-					PunktObjekt nextpos = nextposlist.get(j);
+					PunktObjekt nextpos = ((PunktObjekt) nextposlist.get(j));
 					PunktObjektTopKante nextpotk = nextpos.punktObjektTopKante[0];
 					Element dp = new Element("Datenpunkt");
 					String guid = generateGuid();
@@ -1826,9 +1826,9 @@ public class Constructor {
 	private void placeDp28() {
 		Logger.log("placing DP 28...");
 		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		List objectList = containerElement.getChildren();
 		for(int i = 0; i < objectList.size(); i++) {
-			Element currentObject = objectList.get(i);
+			Element currentObject = ((Element) objectList.get(i));
 			if(!currentObject.getName().equals("Signal")) {
 				continue;
 			}
@@ -1993,9 +1993,9 @@ public class Constructor {
 				}
 				
 				for(int dist : singleDpList) {
-					List<PunktObjekt> nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), dist);
+					List nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), dist);
 					for(int j = 0; j < nextposlist.size(); j++) {
-						PunktObjekt nextpos = nextposlist.get(j);
+						PunktObjekt nextpos = ((PunktObjekt) nextposlist.get(j));
 						PunktObjektTopKante nextpotk = nextpos.punktObjektTopKante[0];
 						Element dp = new Element("Datenpunkt");
 						String guid = generateGuid();
@@ -2017,9 +2017,9 @@ public class Constructor {
 					}
 				}
 				for(int dist : twiceDpList) {
-					List<PunktObjekt> nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), dist);
+					List nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), dist);
 					for(int j = 0; j < nextposlist.size(); j++) {
-						PunktObjekt nextpos = nextposlist.get(j);
+						PunktObjekt nextpos = ((PunktObjekt) nextposlist.get(j));
 						PunktObjektTopKante nextpotk = nextpos.punktObjektTopKante[0];
 						Element dp = new Element("Datenpunkt");
 						String guid = generateGuid();
@@ -2042,9 +2042,9 @@ public class Constructor {
 					}
 				}
 				for(int dist : combinedDpList) {
-					List<PunktObjekt> nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), dist);
+					List nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), dist);
 					for(int j = 0; j < nextposlist.size(); j++) {
-						PunktObjekt nextpos = nextposlist.get(j);
+						PunktObjekt nextpos = ((PunktObjekt) nextposlist.get(j));
 						PunktObjektTopKante nextpotk = nextpos.punktObjektTopKante[0];
 						Element dp = new Element("Datenpunkt");
 						String guid = generateGuid();

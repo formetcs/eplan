@@ -119,7 +119,7 @@ public class PlanProModel {
 	 * 
 	 * @return a list of DOM elements, containing all PlanPro objects
 	 */
-	public List<Element> getPlanProObjectList() {
+	public List getPlanProObjectList() {
 		return getContainerElement().getChildren();
 	}
 	
@@ -132,9 +132,9 @@ public class PlanProModel {
 	 * @return the corresponding DOM element, or null if no object exists for the given id
 	 */
 	public Element getElementbyId(String guid) {
-		List<Element> objectList = getPlanProObjectList();
+		List objectList = getPlanProObjectList();
 		for(int i = 0; i < objectList.size(); i++) {
-			Element e = objectList.get(i);
+			Element e = ((Element) objectList.get(i));
 			if(e.getChild("Identitaet").getChild("Wert").getText().equals(guid))
 			{
 				return e;
@@ -164,15 +164,15 @@ public class PlanProModel {
 	 * @param forward if the search direction should be the same as the topological direction (A -> B) of the starting edge.
 	 * @return a list of {@link eplan.NextTopKanteResult} objects, containing all connected edges.
 	 */
-	public List<NextTopKanteResult> getNextTopKante(Element topKante, boolean forward) {
-		List<NextTopKanteResult> returnval = new ArrayList<NextTopKanteResult>();
+	public List getNextTopKante(Element topKante, boolean forward) {
+		List returnval = new ArrayList();
 		String srcIdTopKnotenA = topKante.getChild("ID_TOP_Knoten_A").getChild("Wert").getText();
 		String srcIdTopKnotenB = topKante.getChild("ID_TOP_Knoten_B").getChild("Wert").getText();
 		String srcTopAnschlussA = topKante.getChild("TOP_Kante_Allg").getChild("TOP_Anschluss_A").getChild("Wert").getText();
 		String srcTopAnschlussB = topKante.getChild("TOP_Kante_Allg").getChild("TOP_Anschluss_B").getChild("Wert").getText();
-		List<Element> objectList = getPlanProObjectList();
+		List objectList = getPlanProObjectList();
 		for(int i = 0; i < objectList.size(); i++) {
-			Element e = objectList.get(i);
+			Element e = ((Element) objectList.get(i));
 			if (e.getName().equals("TOP_Kante") && e != topKante) {
 				String dstIdTopKnotenA = e.getChild("ID_TOP_Knoten_A").getChild("Wert").getText();
 				String dstIdTopKnotenB = e.getChild("ID_TOP_Knoten_B").getChild("Wert").getText();
@@ -283,8 +283,8 @@ public class PlanProModel {
 	 * @param distance the distance from the starting Punkt_Objekt in millimeters (negative value means reverse direction)
 	 * @return a list of {@link eplan.PunktObjekt} objects, containing all positions where a Punkt_Objekt must be created.
 	 */
-	public List<PunktObjekt> calculatePosition(PunktObjekt startpos, int distance) {
-		List<PunktObjekt> returnval = new ArrayList<PunktObjekt>();
+	public List calculatePosition(PunktObjekt startpos, int distance) {
+		List returnval = new ArrayList();
 		for(PunktObjektTopKante potk : startpos.punktObjektTopKante) {
 			String startGuid = potk.idTopKante;
 			int startAbstand = potk.abstand;
@@ -319,9 +319,9 @@ public class PlanProModel {
 					remainingDistance = distance + (edgeLength - startAbstand);
 					direction = true;
 				}
-				List<NextTopKanteResult> edgelist = getNextTopKante(startEdge, direction);
+				List edgelist = getNextTopKante(startEdge, direction);
 				for (int i = 0; i < edgelist.size(); i++) {
-					NextTopKanteResult edgeresult = edgelist.get(i);
+					NextTopKanteResult edgeresult = ((NextTopKanteResult) edgelist.get(i));
 					Element tka = edgeresult.topKanteElement;
 					String tka_id = tka.getChild("Identitaet").getChild("Wert").getText();
 					boolean newdir = edgeresult.direction;
@@ -346,7 +346,7 @@ public class PlanProModel {
 						newWirkrichtung = "gegen";
 					}
 					PunktObjekt newStart = new PunktObjekt(tka_id, newAbstand, newWirkrichtung);
-					List<PunktObjekt> resultlist = calculatePosition(newStart, remainingDistance);
+					List resultlist = calculatePosition(newStart, remainingDistance);
 					returnval.addAll(resultlist);
 				}
 			}
@@ -370,7 +370,7 @@ public class PlanProModel {
 	 * @param forward if the search direction should be the same as the effective direction of the starting Punkt_Objekt
 	 * @return a {@link eplan.PunktObjekt} object, containing the position where the Punkt_Objekt must be created
 	 */
-	public PunktObjekt calculatePositionOnPath(PunktObjekt startpos, List<Element> topKantenList, int distance, boolean forward) {
+	public PunktObjekt calculatePositionOnPath(PunktObjekt startpos, List topKantenList, int distance, boolean forward) {
 		PunktObjekt returnval = null;
 		for(PunktObjektTopKante potk : startpos.punktObjektTopKante) {
 			String startGuid = potk.idTopKante;
@@ -396,7 +396,7 @@ public class PlanProModel {
 					PunktObjekt target = new PunktObjekt(startGuid, newPos, startWirkrichtung);
 					returnval = target;
 				} else if (topKantenList.size() > 1) {
-					Element nextEdge = topKantenList.get(1);
+					Element nextEdge = ((Element) topKantenList.get(1));
 					String nextEdgeId = nextEdge.getChild("Identitaet").getChild("Wert").getText();
 					double tempNextEdgeLength = Double.parseDouble(nextEdge.getChild("TOP_Kante_Allg").getChild("TOP_Laenge").getChild("Wert").getText());
 					tempNextEdgeLength *= 1000.0;
@@ -405,7 +405,7 @@ public class PlanProModel {
 					String src_knoten_b = startEdge.getChild("ID_TOP_Knoten_B").getChild("Wert").getText();
 					String dst_knoten_a = nextEdge.getChild("ID_TOP_Knoten_A").getChild("Wert").getText();
 					String dst_knoten_b = nextEdge.getChild("ID_TOP_Knoten_B").getChild("Wert").getText();
-					List<Element> sublist = topKantenList.subList(1, topKantenList.size());
+					List sublist = topKantenList.subList(1, topKantenList.size());
 					if (!startWirkrichtung.equals("gegen") && forward && src_knoten_b.equals(dst_knoten_a)) {
 						int remainingDistance = distance - (edgeLength - startAbstand);
 						PunktObjekt newStart = new PunktObjekt(nextEdgeId, 0, "in");
@@ -546,9 +546,9 @@ public class PlanProModel {
 					currentDistance = edgeLength - startAbstand;
 					direction = true;
 				}
-				List<NextTopKanteResult> edgelist = getNextTopKante(startEdge, direction);
+				List edgelist = getNextTopKante(startEdge, direction);
 				for (int i = 0; i < edgelist.size(); i++) {
-					NextTopKanteResult edgeresult = edgelist.get(i);
+					NextTopKanteResult edgeresult = ((NextTopKanteResult) edgelist.get(i));
 					Element tka = edgeresult.topKanteElement;
 					String tka_id = tka.getChild("Identitaet").getChild("Wert").getText();
 					boolean newdir = edgeresult.direction;
@@ -663,9 +663,9 @@ public class PlanProModel {
 				} else if (startWirkrichtung.equals("gegen") && !forward) {
 					direction = true;
 				}
-				List<NextTopKanteResult> edgelist = getNextTopKante(startEdge, direction);
+				List edgelist = getNextTopKante(startEdge, direction);
 				for (int i = 0; i < edgelist.size(); i++) {
-					NextTopKanteResult edgeresult = edgelist.get(i);
+					NextTopKanteResult edgeresult = ((NextTopKanteResult) edgelist.get(i));
 					Element tka = edgeresult.topKanteElement;
 					String tka_id = tka.getChild("Identitaet").getChild("Wert").getText();
 					boolean newdir = edgeresult.direction;
@@ -719,7 +719,7 @@ public class PlanProModel {
 		else {
 			cond = new TypeCondition(type);
 		}
-		List<NextPunktObjektPathResult> resultlist = getNextPunktObjektPaths(startpos, cond, Direction.BOTH, forward);
+		List resultlist = getNextPunktObjektPaths(startpos, cond, Direction.BOTH, forward);
 		NextPunktObjektPathResult resultval = NextPunktObjektPathResult.nearest(resultlist);
 		if(resultval != null ) {
 			return resultval.punktObjektElement;
@@ -741,7 +741,7 @@ public class PlanProModel {
 	 * @param forward if the search direction should be the same as the effective direction of the starting Punkt_Objekt
 	 * @return a list of {@link eplan.NextPunktObjektPathResult} objects, containing element and path information
 	 */
-	public List<NextPunktObjektPathResult> getNextPunktObjektPaths(PunktObjekt startpos, String type, boolean forward) {
+	public List getNextPunktObjektPaths(PunktObjekt startpos, String type, boolean forward) {
 		Evaluable cond;
 		if(type.isEmpty()) {
 			cond = new ConstantCondition(true);
@@ -769,8 +769,8 @@ public class PlanProModel {
 	 * @param forward if the search direction should be the same as the effective direction of the starting Punkt_Objekt
 	 * @return a list of {@link eplan.NextPunktObjektPathResult} objects, containing element and path information
 	 */
-	public List<NextPunktObjektPathResult> getNextPunktObjektPaths(PunktObjekt startpos, Evaluable condition, Direction orientation, boolean forward) {
-		List<NextPunktObjektPathResult> returnval = new ArrayList<NextPunktObjektPathResult>();
+	public List getNextPunktObjektPaths(PunktObjekt startpos, Evaluable condition, Direction orientation, boolean forward) {
+		List returnval = new ArrayList();
 		if(orientation == Direction.NOT_CONNECTED) {
 			return returnval;
 		}
@@ -781,12 +781,13 @@ public class PlanProModel {
 			int startAbstand = potk.abstand;
 			String startWirkrichtung = potk.wirkrichtung;
 			Element startElement = getElementbyId(startpos.identitaet);
-			List<Element> objectList = getPlanProObjectList();
+			List objectList = getPlanProObjectList();
 			for (int i = 0; i < objectList.size(); i++) {
-				Element temp = objectList.get(i);
+				Element temp = ((Element) objectList.get(i));
 				if (temp != startElement && isPunktObjekt(temp)) {
-					List<Element> topKantenList = temp.getChildren("Punkt_Objekt_TOP_Kante");
-					for(Element topKantenElement : topKantenList) {
+					List topKantenList = temp.getChildren("Punkt_Objekt_TOP_Kante");
+					for(int j = 0; j < topKantenList.size(); j++) {
+						Element topKantenElement = ((Element) topKantenList.get(j));
 						String tempIdTopKante = topKantenElement.getChild("ID_TOP_Kante").getChild("Wert").getText();
 						if(!startIdTopKante.equals(tempIdTopKante)) {
 							continue;
@@ -832,7 +833,7 @@ public class PlanProModel {
 			int edgeLength = (int) tempEdgeLength;;
 	
 			if (minimumDistance >= 0) { // Punkt_Objekt found on the same edge
-				List<Element> klist = new ArrayList<Element>();
+				List klist = new ArrayList();
 				klist.add(tempEdge);
 				NextPunktObjektPathResult res = new NextPunktObjektPathResult(klist, minimumPunktObj, minimumDistance);
 				returnval.add(res);
@@ -847,9 +848,9 @@ public class PlanProModel {
 				} else if (startWirkrichtung.equals("gegen") && !forward) {
 					searchdirection = true;
 				}
-				List<NextTopKanteResult> edgelist = getNextTopKante(tempEdge, searchdirection);
+				List edgelist = getNextTopKante(tempEdge, searchdirection);
 				for (int i = 0; i < edgelist.size(); i++) {
-					NextTopKanteResult temppair = edgelist.get(i);
+					NextTopKanteResult temppair = ((NextTopKanteResult) edgelist.get(i));
 					Element newKante = temppair.topKanteElement;
 					boolean newDirection = temppair.direction;
 					String newKanteId = newKante.getChild("Identitaet").getChild("Wert").getText();
@@ -869,10 +870,10 @@ public class PlanProModel {
 							finalForward = false;
 						}
 						PunktObjekt newStartPunktObjekt = new PunktObjekt(newKanteId, 0, finalWirkrichtung);
-						List<NextPunktObjektPathResult> tempresultlist = getNextPunktObjektPaths(newStartPunktObjekt, condition, orientation, finalForward);
+						List tempresultlist = getNextPunktObjektPaths(newStartPunktObjekt, condition, orientation, finalForward);
 						for (int j = 0; j < tempresultlist.size(); j++) {
-							NextPunktObjektPathResult tempresult = tempresultlist.get(j);
-							List<Element> trKantenList = tempresult.topKantenList;
+							NextPunktObjektPathResult tempresult = ((NextPunktObjektPathResult) tempresultlist.get(j));
+							List trKantenList = tempresult.topKantenList;
 							Element trPoElem = tempresult.punktObjektElement;
 							int trDist = tempresult.distance;
 							int additionalDistance = edgeLength - startAbstand;
@@ -893,10 +894,10 @@ public class PlanProModel {
 							finalForward = false;
 						}
 						PunktObjekt newStartPunktObjekt = new PunktObjekt(newKanteId, newKanteLength, finalWirkrichtung);
-						List<NextPunktObjektPathResult> tempresultlist = getNextPunktObjektPaths(newStartPunktObjekt, condition, orientation, finalForward);
+						List tempresultlist = getNextPunktObjektPaths(newStartPunktObjekt, condition, orientation, finalForward);
 						for (int j = 0; j < tempresultlist.size(); j++) {
-							NextPunktObjektPathResult tempresult = tempresultlist.get(j);
-							List<Element> trKantenList = tempresult.topKantenList;
+							NextPunktObjektPathResult tempresult = ((NextPunktObjektPathResult) tempresultlist.get(j));
+							List trKantenList = tempresult.topKantenList;
 							Element trPoElem = tempresult.punktObjektElement;
 							int trDist = tempresult.distance;
 							int additionalDistance = edgeLength - startAbstand;
@@ -917,10 +918,10 @@ public class PlanProModel {
 							finalForward = true;
 						}
 						PunktObjekt newStartPunktObjekt = new PunktObjekt(newKanteId, 0, finalWirkrichtung);
-						List<NextPunktObjektPathResult> tempresultlist = getNextPunktObjektPaths(newStartPunktObjekt, condition, orientation, finalForward);
+						List tempresultlist = getNextPunktObjektPaths(newStartPunktObjekt, condition, orientation, finalForward);
 						for (int j = 0; j < tempresultlist.size(); j++) {
-							NextPunktObjektPathResult tempresult = tempresultlist.get(j);
-							List<Element> trKantenList = tempresult.topKantenList;
+							NextPunktObjektPathResult tempresult = ((NextPunktObjektPathResult) tempresultlist.get(j));
+							List trKantenList = tempresult.topKantenList;
 							Element trPoElem = tempresult.punktObjektElement;
 							int trDist = tempresult.distance;
 							int additionalDistance = startAbstand;
@@ -941,10 +942,10 @@ public class PlanProModel {
 							finalForward = true;
 						}
 						PunktObjekt newStartPunktObjekt = new PunktObjekt(newKanteId, newKanteLength, finalWirkrichtung);
-						List<NextPunktObjektPathResult> tempresultlist = getNextPunktObjektPaths(newStartPunktObjekt, condition, orientation, finalForward);
+						List tempresultlist = getNextPunktObjektPaths(newStartPunktObjekt, condition, orientation, finalForward);
 						for (int j = 0; j < tempresultlist.size(); j++) {
-							NextPunktObjektPathResult tempresult = tempresultlist.get(j);
-							List<Element> trKantenList = tempresult.topKantenList;
+							NextPunktObjektPathResult tempresult = ((NextPunktObjektPathResult) tempresultlist.get(j));
+							List trKantenList = tempresult.topKantenList;
 							Element trPoElem = tempresult.punktObjektElement;
 							int trDist = tempresult.distance;
 							int additionalDistance = startAbstand;

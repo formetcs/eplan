@@ -20,7 +20,7 @@ public class NextPunktObjektPathResult {
 	/**
 	 * A list of DOM elements representing the TOP_Kante objects on the route between the starting Punkt_Objekt and the found Punkt_Objekt.
 	 */
-	public List<Element> topKantenList;
+	public List topKantenList;
 	
 	/**
 	 * The DOM element of a found Punkt_Objekt.
@@ -39,7 +39,7 @@ public class NextPunktObjektPathResult {
 	 * @param e the DOM element of a found Punkt_Objekt
 	 * @param dist the distance between the starting point and the found Punkt_Objekt in millimeters
 	 */
-	public NextPunktObjektPathResult(List<Element> tkl, Element e, int dist) {
+	public NextPunktObjektPathResult(List tkl, Element e, int dist) {
 		this.topKantenList = tkl;
 		this.punktObjektElement = e;
 		this.distance = dist;
@@ -53,11 +53,11 @@ public class NextPunktObjektPathResult {
 	 * @param list a list of NextPunktObjektPathResult objects
 	 * @return the NextPunktObjektPathResult with the lowest distance value or null if the list was empty
 	 */
-	public static NextPunktObjektPathResult nearest(List<NextPunktObjektPathResult> list) {
+	public static NextPunktObjektPathResult nearest(List list) {
 		NextPunktObjektPathResult bestPath = null;
 		int bestDistance = 999999999;
 		for(int i = 0; i < list.size(); i++) {
-			NextPunktObjektPathResult currentPath = list.get(i);
+			NextPunktObjektPathResult currentPath = ((NextPunktObjektPathResult) list.get(i));
 			int currentDistance = currentPath.distance;
 			if(currentDistance < bestDistance) {
 				bestPath = currentPath;
@@ -75,11 +75,11 @@ public class NextPunktObjektPathResult {
 	 * @param list a list of NextPunktObjektPathResult objects
 	 * @return the NextPunktObjektPathResult with the highest distance value or null if the list was empty
 	 */
-	public static NextPunktObjektPathResult farthest(List<NextPunktObjektPathResult> list) {
+	public static NextPunktObjektPathResult farthest(List list) {
 		NextPunktObjektPathResult bestPath = null;
 		int bestDistance = 0;
 		for(int i = 0; i < list.size(); i++) {
-			NextPunktObjektPathResult currentPath = list.get(i);
+			NextPunktObjektPathResult currentPath = ((NextPunktObjektPathResult) list.get(i));
 			int currentDistance = currentPath.distance;
 			if(currentDistance > bestDistance) {
 				bestPath = currentPath;
@@ -93,11 +93,11 @@ public class NextPunktObjektPathResult {
 		StringBuffer tklString = new StringBuffer();
 		tklString.append("[");
 		if(topKantenList.size() > 0) {
-			String id = topKantenList.get(0).getChild("Identitaet").getChild("Wert").getText();
+			String id = ((Element) topKantenList.get(0)).getChild("Identitaet").getChild("Wert").getText();
 			tklString.append(id);
 		}
 		for(int i = 1; i < topKantenList.size(); i++) {
-			String id = topKantenList.get(i).getChild("Identitaet").getChild("Wert").getText();
+			String id = ((Element) topKantenList.get(i)).getChild("Identitaet").getChild("Wert").getText();
 			tklString.append(",").append(id);
 		}
 		tklString.append("]");

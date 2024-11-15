@@ -105,26 +105,26 @@ public class PunktObjekt {
 	public static PunktObjekt valueOf(Element e) {
 		PunktObjekt returnval = new PunktObjekt();
 		returnval.identitaet = e.getChild("Identitaet").getChild("Wert").getText();
-		List<Element> punktObjektTopKantenList = e.getChildren("Punkt_Objekt_TOP_Kante");
+		List punktObjektTopKantenList = e.getChildren("Punkt_Objekt_TOP_Kante");
 		int potkCount = punktObjektTopKantenList.size();
 		returnval.punktObjektTopKante = new PunktObjektTopKante[potkCount];
 		for(int i = 0; i < potkCount; i++) {
 			returnval.punktObjektTopKante[i] = new PunktObjektTopKante();
-			returnval.punktObjektTopKante[i].idTopKante = punktObjektTopKantenList.get(i).getChild("ID_TOP_Kante").getChild("Wert").getText();
-			double tempAbstand = Double.parseDouble(punktObjektTopKantenList.get(i).getChild("Abstand").getChild("Wert").getText());
+			returnval.punktObjektTopKante[i].idTopKante = ((Element) punktObjektTopKantenList.get(i)).getChild("ID_TOP_Kante").getChild("Wert").getText();
+			double tempAbstand = Double.parseDouble(((Element) punktObjektTopKantenList.get(i)).getChild("Abstand").getChild("Wert").getText());
 			tempAbstand *= 1000.0;
 			returnval.punktObjektTopKante[i].abstand = (int) tempAbstand;
 			returnval.punktObjektTopKante[i].wirkrichtung = "beide";
-			if(punktObjektTopKantenList.get(i).getChild("Wirkrichtung") != null) {
-				returnval.punktObjektTopKante[i].wirkrichtung = punktObjektTopKantenList.get(i).getChild("Wirkrichtung").getChild("Wert").getText();
+			if(((Element) punktObjektTopKantenList.get(i)).getChild("Wirkrichtung") != null) {
+				returnval.punktObjektTopKante[i].wirkrichtung = ((Element) punktObjektTopKantenList.get(i)).getChild("Wirkrichtung").getChild("Wert").getText();
 			}
 			returnval.punktObjektTopKante[i].seitlicheLage = null;
-			if(punktObjektTopKantenList.get(i).getChild("Seitliche_Lage") != null) {
-				returnval.punktObjektTopKante[i].seitlicheLage = punktObjektTopKantenList.get(i).getChild("Seitliche_Lage").getChild("Wert").getText();
+			if(((Element) punktObjektTopKantenList.get(i)).getChild("Seitliche_Lage") != null) {
+				returnval.punktObjektTopKante[i].seitlicheLage = ((Element) punktObjektTopKantenList.get(i)).getChild("Seitliche_Lage").getChild("Wert").getText();
 			}
 			returnval.punktObjektTopKante[i].seitlicherAbstand = 0;
-			if(punktObjektTopKantenList.get(i).getChild("Seitlicher_Abstand") != null) {
-				double tempSeitlicherAbstand = Double.parseDouble(punktObjektTopKantenList.get(i).getChild("Seitlicher_Abstand").getChild("Wert").getText());
+			if(((Element) punktObjektTopKantenList.get(i)).getChild("Seitlicher_Abstand") != null) {
+				double tempSeitlicherAbstand = Double.parseDouble(((Element) punktObjektTopKantenList.get(i)).getChild("Seitlicher_Abstand").getChild("Wert").getText());
 				tempSeitlicherAbstand *= 1000.0;
 				returnval.punktObjektTopKante[i].seitlicherAbstand = (int) tempSeitlicherAbstand;
 			}
