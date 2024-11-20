@@ -14,5 +14,5 @@ public final class ArrayList implements java.util.List {
       @ ensures \fresh(this) && \fresh(this.*) && \typeof(this) == \type(ArrayList);
       @ determines this, seq \by c.seq \new_objects this;
       @*/
-    public /*@pure@*/ ArrayList(Collection c);
+    public /*@pure@*/ ArrayList(java.util.Collection c);
 }

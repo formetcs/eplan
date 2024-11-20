@@ -2,14 +2,27 @@ package org.jdom2;
 
 public class Element {
 
-public String getName();
+	public Element();
 
-public String getText();
+	public Element(java.lang.String name);
 
-public Element 	getChild(String cname);
 
-public Attribute getAttribute(String attname, Namespace ns);
+	public org.jdom2.Element addContent(org.jdom2.Element child);
 
-public Attribute getAttribute(String attname);
+	public java.lang.String getName();
+
+	public java.lang.String getText();
+
+	public org.jdom2.Element setText(java.lang.String text);
+
+	public org.jdom2.Element getChild(java.lang.String cname);
+
+	public java.util.List getChildren();
+
+	public java.util.List getChildren(java.lang.String cname);
+
+	public org.jdom2.Attribute getAttribute(java.lang.String attname, org.jdom2.Namespace ns);
+
+	public org.jdom2.Attribute getAttribute(java.lang.String attname);
 
 }

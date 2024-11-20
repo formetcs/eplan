@@ -1,7 +1,7 @@
 package org.jdom2;
 
-public class Attribute implements java.io.Serializable, Cloneable {
+public class Attribute implements java.io.Serializable, java.lang.Cloneable {
 
-public String getValue();
+	public java.lang.String getValue();
 
 }

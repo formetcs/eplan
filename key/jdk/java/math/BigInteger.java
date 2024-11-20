@@ -6,7 +6,7 @@ public final class BigInteger extends java.lang.Number implements java.lang.Comp
     
    //@ public static invariant java.math.BigInteger.ZERO.value == (\bigint) 0;
 
-   public static final java.math.BigInteger ZERO = BigInteger.valueOf(0);
+   public static final java.math.BigInteger ZERO = java.math.BigInteger.valueOf(0);
    
    public static BigInteger valueOf(long v) {
        BigInteger result = new BigInteger();

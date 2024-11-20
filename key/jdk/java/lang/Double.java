@@ -11,7 +11,7 @@ public class Double {
         return val != val;
     }
     
-    public static double parseDouble(String s) throws NumberFormatException;
+    public static double parseDouble(java.lang.String s) throws java.lang.NumberFormatException;
 
     /*@ public model_behaviour
       @ requires true;

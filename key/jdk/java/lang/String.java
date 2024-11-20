@@ -431,6 +431,8 @@ public final class String extends java.lang.Object implements java.io.Serializab
      @*/
    public char[] toCharArray();
 
+   public static java.lang.String format(java.lang.String arg0, double arg1);
+
    public static java.lang.String format(java.lang.String arg0, java.lang.Object[] arg1);
 // public static java.lang.String format(java.util.Locale arg0, java.lang.String arg1, java.lang.Object[] arg2);
 

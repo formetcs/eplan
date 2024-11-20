@@ -18,7 +18,7 @@ public interface Map
       @ ensures \fresh(\result);
       @ assignable \nothing;
       @*/
-    public java.util.Set keySet();
+   public java.util.Set keySet();
 
    public int size();
    public boolean isEmpty();

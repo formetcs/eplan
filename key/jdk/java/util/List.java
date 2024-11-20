@@ -13,6 +13,8 @@ public interface List extends java.util.Collection
      @*/
    public void add(int arg0, java.lang.Object arg1);
    
+   public boolean contains(java.lang.Object o);
+   
    public boolean addAll(int arg0, java.util.Collection arg1);
    
    /*@ public normal_behavior

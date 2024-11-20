@@ -7,16 +7,16 @@ public class StringBuffer extends java.lang.Object implements java.io.Serializab
     public StringBuffer(int n);
     public StringBuffer(java.lang.String s);
 
-    public StringBuffer	append(boolean b); 
-    public StringBuffer	append(char c); 
+    public java.lang.StringBuffer	append(boolean b); 
+    public java.lang.StringBuffer	append(char c); 
     //    public StringBuffer	append(char[] str); 
     //    public StringBuffer	append(char[] str, int offset, int len); 
     //    public StringBuffer	append(double d); 
     //    public StringBuffer	append(float f); 
-    public StringBuffer	append(int i); 
-    public StringBuffer	append(long l); 
-    public StringBuffer	append(java.lang.Object obj); 
-    public StringBuffer	append(java.lang.StringBuffer sb); 
+    public java.lang.StringBuffer	append(int i); 
+    public java.lang.StringBuffer	append(long l); 
+    public java.lang.StringBuffer	append(java.lang.Object obj); 
+    public java.lang.StringBuffer	append(java.lang.StringBuffer sb); 
 
     public char charAt(int index) ;
     public int length();

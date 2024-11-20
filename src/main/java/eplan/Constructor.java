@@ -16,6 +16,7 @@ import eplan.conditions.ConditionDisjunction;
 import eplan.conditions.Evaluable;
 import eplan.conditions.ExistenceCondition;
 import eplan.conditions.IntegerCondition;
+import eplan.conditions.SignalAspectCondition;
 import eplan.conditions.StringCondition;
 import eplan.conditions.TypeCondition;
 import eplan.conditions.AbstractComparisonCondition.Operator;

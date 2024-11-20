@@ -8,4 +8,4 @@ package java.util;
  * library. Since these are not visible to the library user, they are -- like this class --
  * effectively final.
  */
-public final class ListIteratorImpl implements ListIterator { }
+public final class ListIteratorImpl implements java.util.ListIterator { }

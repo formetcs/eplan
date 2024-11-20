@@ -26,7 +26,7 @@ public interface ListIterator extends java.util.Iterator
       @ determines \result \by seq, index;
       @ determines index \by \itself;
       @*/
-    public /*@nullable@*/ Object next();
+    public /*@nullable@*/ java.lang.Object next();
     
    public boolean hasPrevious();
    public java.lang.Object previous();
