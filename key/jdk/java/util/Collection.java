@@ -7,11 +7,11 @@ public interface Collection extends java.lang.Iterable
 {
     
    //@ public instance ghost \seq seq;
+   //@ accessible \inv:this.*;
 
    /*@ public normal_behavior
      @ ensures \result == seq.length;
-     @ assignable \nothing;
-     @ determines \result \by seq.length;
+     @ assignable \strictly_nothing;
      @ */
    public int size();
    
@@ -25,7 +25,6 @@ public interface Collection extends java.lang.Iterable
    /*@ public normal_behavior
      @ ensures seq == \seq_concat(\old(seq), \seq_singleton(arg0));
      @ assignable seq;
-     @ determines seq \by seq, arg0;
      @*/
    public boolean add(java.lang.Object arg0);
    

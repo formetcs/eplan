@@ -2,6 +2,7 @@ package org.jdom2;
 
 public class Element {
 
+	//@ accessible \inv:this.*;
 	public Element();
 
 	public Element(java.lang.String name);

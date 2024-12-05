@@ -7,9 +7,8 @@ public interface List extends java.util.Collection
 {
    /*@ public normal_behavior
      @ requires arg0 == 0;
-     @ ensures seq == \seq_concat(\seq_singleton(arg0), \old(seq));
+     @ ensures seq == \seq_concat(\seq_singleton(arg1), \old(seq));
      @ assignable seq;
-     @ determines seq \by seq, arg0;
      @*/
    public void add(int arg0, java.lang.Object arg1);
    
@@ -20,8 +19,7 @@ public interface List extends java.util.Collection
    /*@ public normal_behavior
      @ requires 0 <= arg0 && arg0 < seq.length;
      @ ensures ((Object)seq[arg0]) == \result;
-     @ assignable \nothing;
-     @ determines \result \by seq, arg0;
+     @ assignable \strictly_nothing;
      @*/
    public java.lang.Object get(int arg0);
    public java.lang.Object set(int arg0, java.lang.Object arg1);

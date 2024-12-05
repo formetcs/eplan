@@ -17,18 +17,22 @@ import org.jdom2.Element;
  */
 public class ConditionDisjunction implements Evaluable {
 
+	
+	
 	/**
 	 * The list of conditions that should be evaluated.
 	 */
-	private List conditionList;
+	private /*@ spec_public @*/ List conditionList;
 	
 	/**
 	 * Creates a new ConditionDisjunction.
 	 * 
 	 * @param evaluables a variable number of conditions that should be evaluated
 	 */
+	
 	public ConditionDisjunction(Evaluable[] evaluables) {
 		conditionList = new ArrayList();
+		
 		for(Evaluable e : evaluables) {
 			addCondition(e);
 		}
@@ -39,6 +43,7 @@ public class ConditionDisjunction implements Evaluable {
 	 * 
 	 * @param e the new condition to add
 	 */
+	
 	public void addCondition(Evaluable e) {
 		conditionList.add(e);
 	}
@@ -49,7 +54,10 @@ public class ConditionDisjunction implements Evaluable {
 	
 	
 
+	
+	@Override
 	public boolean evaluate(Element e) {
+		
 		for(int i = 0; i < conditionList.size(); i++) {
 			if(((Evaluable)conditionList.get(i)).evaluate(e)) {
 				return true;
