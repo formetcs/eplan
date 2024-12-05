@@ -14,9 +14,24 @@ import java.io.IOException;
  */
 public class Logger {
 	
+	/**
+	 * Flag if general messages are enabled.
+	 */
 	private static boolean enabled = false;
+	
+	/**
+	 * Flag if debug messages are enabled.
+	 */
 	private static boolean debugEnabled = false;
+	
+	/**
+	 * Name of the logfile.
+	 */
 	private static String logfile = null;
+	
+	/**
+	 * Buffer where all messages are stored temporarily when they should be written to file.
+	 */
 	private static String messageString = "";
 	
 	

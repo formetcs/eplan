@@ -24,6 +24,12 @@ public class ExistenceCondition extends AbstractComparisonCondition {
 		comparePath = s;
 	}
 
+	/**
+	 * Evaluation function.
+	 * 
+	 * @param e the DOM element to test
+	 * @return true if the object has the required path, otherwise false
+	 */
 	@Override
 	public boolean evaluate(Element e) {
 		return isPathExisting(e, comparePath);

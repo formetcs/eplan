@@ -34,6 +34,12 @@ public class SignalAspectCondition implements Evaluable {
 		signalAspectId = signalbegriffId;
 	}
 
+	/**
+	 * Evaluation function.
+	 * 
+	 * @param e the DOM element to test
+	 * @return true if the object is a signal and has the required signal aspect, otherwise false
+	 */
 	@Override
 	public boolean evaluate(Element e) {
 		String testingAspect = "nsSignalbegriffe_Ril_301:" + signalAspectId;

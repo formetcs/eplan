@@ -21,11 +21,34 @@ import eplan.PlanProModel.Direction;
  */
 public class Constructor {
 	
+	/**
+	 * The PlanPro model.
+	 */
 	private PlanProModel ppm;
+	
+	/**
+	 * The ETCS level.
+	 */
 	private int etcslevel;
+	
+	/**
+	 * List of datapoint types which should be included into the planning.
+	 */
 	private String[] addlist;
+	
+	/**
+	 * List of datapoint types which should be omitted from planning.
+	 */
 	private String[] removelist;
+	
+	/**
+	 * Flag if compatibility mode for old PlanPro files should be used.
+	 */
 	private boolean compatibilityMode;
+	
+	/**
+	 * List of signals where the DP 24 functionality has already been handled with the DP 28 placement rule.
+	 */
 	List<Element> alreadyHandledDp24;
 	
 	/**
@@ -1008,6 +1031,7 @@ public class Constructor {
 			}
 		}
 	}
+	
 	
 	/**
 	 * Contains the placement rules for datapoint type 20 (Back-to-back case) (ETCS Level 2).

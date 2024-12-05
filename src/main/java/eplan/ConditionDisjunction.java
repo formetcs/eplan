@@ -43,6 +43,12 @@ public class ConditionDisjunction implements Evaluable {
 		conditionList.add(e);
 	}
 
+	/**
+	 * Evaluation function.
+	 * 
+	 * @param e the DOM element to test
+	 * @return true if at least one containing condition is fulfilled for the given object, otherwise false
+	 */
 	@Override
 	public boolean evaluate(Element e) {
 		for(int i = 0; i < conditionList.size(); i++) {

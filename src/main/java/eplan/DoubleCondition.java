@@ -38,6 +38,12 @@ public class DoubleCondition extends AbstractComparisonCondition {
 		compareValue = val;
 	}
 
+	/**
+	 * Evaluation function.
+	 * 
+	 * @param e the DOM element to test
+	 * @return the comparison result of the value from the object at the given path and the given comparison value, using the given comparison operator
+	 */
 	@Override
 	public boolean evaluate(Element e) {
 		double finalValue = Double.parseDouble(getElementValue(e, comparePath));

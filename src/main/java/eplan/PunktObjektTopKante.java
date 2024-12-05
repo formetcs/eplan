@@ -55,7 +55,12 @@ public class PunktObjektTopKante {
 		this.seitlicheLage = null;
 	}
 	
-	
+	/**
+	 * String representation of the object (only for debugging purposes).
+	 * 
+	 * @return String representation of the object
+	 */
+	@Override
 	public String toString() {
 		return "[" + idTopKante + "," + abstand + "," + wirkrichtung + "," + seitlicherAbstand + "," + seitlicheLage + "]";
 	}

@@ -38,6 +38,12 @@ public class IntegerCondition extends AbstractComparisonCondition {
 		compareValue = val;
 	}
 	
+	/**
+	 * Evaluation function.
+	 * 
+	 * @param e the DOM element to test
+	 * @return the comparison result of the value from the object at the given path and the given comparison value, using the given comparison operator
+	 */
 	@Override
 	public boolean evaluate(Element e) {
 		int finalValue = Integer.parseInt(getElementValue(e, comparePath));

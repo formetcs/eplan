@@ -962,6 +962,7 @@ public class PlanProModel {
 	 * 
 	 * @return the XML representation of the DOM tree
 	 */
+	@Override
 	public String toString() {
 		XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
 		return out.outputString(doc);

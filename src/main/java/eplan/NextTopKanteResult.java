@@ -36,6 +36,12 @@ public class NextTopKanteResult {
 		this.direction = dir;
 	}
 	
+	/**
+	 * String representation of the object (only for debugging purposes).
+	 * 
+	 * @return String representation of the object
+	 */
+	@Override
 	public String toString() {
 		String id = topKanteElement.getChild("Identitaet").getChild("Wert").getText();
 		return "[" + id + "," + direction + "]";

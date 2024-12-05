@@ -132,7 +132,12 @@ public class PunktObjekt {
 		return returnval;
 	}
 	
-	
+	/**
+	 * String representation of the object (only for debugging purposes).
+	 * 
+	 * @return String representation of the object
+	 */
+	@Override
 	public String toString() {
 		StringBuffer tklString = new StringBuffer();
 		tklString.append("[");

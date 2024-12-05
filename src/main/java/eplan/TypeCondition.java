@@ -25,6 +25,12 @@ public class TypeCondition implements Evaluable {
 		compareValue = val;
 	}
 
+	/**
+	 * Evaluation function.
+	 * 
+	 * @param e the DOM element to test
+	 * @return true if the object has the required type, otherwise false
+	 */
 	@Override
 	public boolean evaluate(Element e) {
 		if(e.getName().equals(compareValue)) return true;

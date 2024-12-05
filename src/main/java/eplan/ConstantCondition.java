@@ -24,6 +24,12 @@ public class ConstantCondition implements Evaluable {
 		constantValue = b;
 	}
 
+	/**
+	 * Evaluation function.
+	 * 
+	 * @param e the DOM element to test
+	 * @return the predefined constant value (regardless of the given object)
+	 */
 	@Override
 	public boolean evaluate(Element e) {
 		return constantValue;

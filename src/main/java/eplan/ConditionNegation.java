@@ -24,6 +24,12 @@ public class ConditionNegation implements Evaluable {
 		condition = ev;
 	}
 
+	/**
+	 * Evaluation function.
+	 * 
+	 * @param e the DOM element to test
+	 * @return true if the condition is NOT fulfilled for the given object, otherwise false
+	 */
 	@Override
 	public boolean evaluate(Element e) {
 		return (! condition.evaluate(e));
