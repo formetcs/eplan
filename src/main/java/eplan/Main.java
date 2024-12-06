@@ -28,6 +28,16 @@ import org.jdom2.JDOMException;
 public class Main {
 	
 	/**
+	 * Version string of the program.
+	 */
+	private static final String VERSION = "0.2.0";
+	
+	/**
+	 * Version string of the supported PlanPro version.
+	 */
+	private static final String PLANPRO_VERSION = "1.8.0";
+	
+	/**
 	 * Disable instance creation.
 	 */
 	private Main() {
@@ -44,6 +54,8 @@ public class Main {
 		Options options = new Options();
 		options.addOption("v", "version", false, "print version information and exit");
 		options.addOption("h", "help", false, "print this message");
+		Option aboutOption = Option.builder().longOpt("about").desc("print information about the program and exit").build();
+		options.addOption(aboutOption);
 		Option outfileOption = Option.builder("o").hasArg().argName("file").desc("write generated plan to <file> instead of stdout").build();
 		options.addOption(outfileOption);
 		Option levelOption = Option.builder("l").longOpt("level").hasArg().argName("lv").desc("generate a plan for ETCS Level <lv>").build();
@@ -76,7 +88,16 @@ public class Main {
 				System.exit(0);
 			}
 			if(cmd.hasOption("v")) {
-				System.out.println("Version: 0.1.0");
+				System.out.println("Version: " + VERSION);
+				System.exit(0);
+			}
+			if(cmd.hasOption("about")) {
+				System.out.println("EPlan - Automated ETCS Planning Tool");
+				System.out.println("Version: " + VERSION);
+				System.out.println("Supports PlanPro Version " + PLANPRO_VERSION);
+				System.out.println();
+				System.out.println("Copyright (c) 2017-2024, The FormETCS Project. All rights reserved.");
+				System.out.println("This program is licensed under the terms of the Modified (3-Clause) BSD License.");
 				System.exit(0);
 			}
 			if(cmd.hasOption("o")) {
@@ -107,8 +128,8 @@ public class Main {
 			
 			String[] remainingArgs = cmd.getArgs();
 			if(remainingArgs.length != 1) {
-				System.err.println("Wrong argument count, type 'eplan -h' for help");
-				System.exit(1);
+				System.out.println("Wrong argument count, type 'eplan -h' for help");
+				System.exit(0);
 			}
 			else {
 				infile = remainingArgs[0];
