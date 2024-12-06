@@ -1,3 +1,12 @@
+/**
+ * EPlan - Automated ETCS Planning Tool
+ * 
+ * Copyright (c) 2017-2024, The FormETCS Project. All rights reserved.
+ * This file is licensed under the terms of the Modified (3-Clause) BSD License.
+ * 
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 package eplan;
 
 
