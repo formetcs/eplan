@@ -4,6 +4,8 @@ plugins {
 	id 'com.github.johnrengelman.shadow' version "8.1.1"
 }
 
+applicationName = 'eplan'
+archivesBaseName = 'eplan'
 group 'com.github.formetcs'
 version '0.2.0-SNAPSHOT'
 
