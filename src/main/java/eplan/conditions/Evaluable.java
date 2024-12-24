@@ -11,15 +11,17 @@ import org.jdom2.Element;
 public interface Evaluable {
 	
 	//@ public instance model \locset footprint;
-	// public instance model \locset footprint_depth;
-	//@ represents footprint = this.*;
+	//@ public instance model \locset footprint_depth;
+	
 	//@ accessible footprint: footprint;
+	//@ accessible footprint_depth: footprint_depth;
 
+	
 	//@ accessible \inv: footprint;
 
 
 	//@ public model instance int depth;	
-	// accessible depth: footprint_depth;
+	//@ accessible depth: footprint_depth;
 	//@ public instance invariant depth >= 0;
 
 	/* public model_behavior

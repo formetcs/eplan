@@ -12,6 +12,7 @@ public class ConstantCondition implements Evaluable {
 	
 	//@ represents depth = 0;
 	// represents footprint_depth = \empty;
+	//@ represents footprint = \singleton(this.constantValue);
 	
 	/**
 	 * The constant value that should be returned during evaluation.
