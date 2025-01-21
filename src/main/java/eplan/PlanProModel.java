@@ -244,6 +244,40 @@ public class PlanProModel {
 	
 	
 	/**
+	 * Create a new end state as a copy from the existing start state.
+	 * Any existing end state will be deleted.
+	 */
+	public void createEndState() {
+		Element rootElem = doc.getRootElement();
+		Element fachdatenElem = rootElem.getChild("LST_Planung").getChild("Fachdaten");
+		List<Element> ausgabeFachdatenList = fachdatenElem.getChildren("Ausgabe_Fachdaten");
+		for(int i = 0; i < ausgabeFachdatenList.size(); i++) {
+			Element ausgabeFachdatenElem = ausgabeFachdatenList.get(i);
+			Element containerStartElem = ausgabeFachdatenElem.getChild("LST_Zustand_Start").getChild("Container");
+			Element newContainerZielElem = containerStartElem.clone();
+			Element zustandZielElem = ausgabeFachdatenElem.getChild("LST_Zustand_Ziel");
+			zustandZielElem.removeChild("Container");
+			zustandZielElem.addContent(newContainerZielElem);
+		}
+	}
+	
+	
+	/**
+	 * Delete the existing start state.
+	 */
+	public void deleteStartState() {
+		Element rootElem = doc.getRootElement();
+		Element fachdatenElem = rootElem.getChild("LST_Planung").getChild("Fachdaten");
+		List<Element> ausgabeFachdatenList = fachdatenElem.getChildren("Ausgabe_Fachdaten");
+		for(int i = 0; i < ausgabeFachdatenList.size(); i++) {
+			Element ausgabeFachdatenElem = ausgabeFachdatenList.get(i);
+			Element containerElem = ausgabeFachdatenElem.getChild("LST_Zustand_Start").getChild("Container");
+			containerElem.removeContent();
+		}
+	}
+	
+	
+	/**
 	 * Retrieve the DOM element of a PlanPro object corresponding to the given id.
 	 * 
 	 * 

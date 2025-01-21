@@ -76,6 +76,10 @@ public class Main {
 		options.addOption(logfileOption);
 		Option compatibilityOption = Option.builder("c").longOpt("compatibility").desc("compatibility mode for files converted from older PlanPro formats").build();
 		options.addOption(compatibilityOption);
+		Option createEndOption = Option.builder().longOpt("create-end").desc("create a new end state as a copy of the start state (existing end state will be lost)").build();
+		options.addOption(createEndOption);
+		Option deleteStartOption = Option.builder().longOpt("delete-start").desc("delete any existing start state after sucessful planning").build();
+		options.addOption(deleteStartOption);
 		
 		String infile = null;
 		String outfile = null;
@@ -91,73 +95,84 @@ public class Main {
 		Logger.enable(true);
 		Logger.enableDebug(false);
 		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = null;
+		
 		try {
-			CommandLine cmd = parser.parse(options, args);
-			if(cmd.hasOption("h")) {
-				HelpFormatter formatter = new HelpFormatter();
-				formatter.printHelp( "eplan [options] FILE", options );
-				System.exit(0);
-			}
-			if(cmd.hasOption("v")) {
-				System.out.println("Version: " + VERSION);
-				System.exit(0);
-			}
-			if(cmd.hasOption("about")) {
-				System.out.println("EPlan - Automated ETCS Planning Tool");
-				System.out.println("Version: " + VERSION);
-				System.out.println("Supports PlanPro Version " + PLANPRO_VERSION);
-				System.out.println();
-				System.out.println("Copyright (c) 2017-2025, The FormETCS Project. All rights reserved.");
-				System.out.println("This program is licensed under the terms of the Modified (3-Clause) BSD License.");
-				System.exit(0);
-			}
-			if(cmd.hasOption("o")) {
-				outfile = cmd.getOptionValue("o");
-			}
-			if(cmd.hasOption("stdin")) {
-				readFromStdin = true;
-			}
-			if(cmd.hasOption("l")) {
-				etcslevel = Integer.parseInt(cmd.getOptionValue("l"));
-			}
-			if(cmd.hasOption("a")) {
-				addlist = cmd.getOptionValues("a");
-			}
-			if(cmd.hasOption("r")) {
-				removelist = cmd.getOptionValues("r");
-			}
-			if(cmd.hasOption("debug")) {
-				enableDebug = true;
-			}
-			if(cmd.hasOption("stderr")) {
-				writeToStderr = true;
-			}
-			if(cmd.hasOption("q")) {
-				enableLog = false;
-				enableDebug = false;
-			}
-			if(cmd.hasOption("logfile")) {
-				logfile = cmd.getOptionValue("logfile");
-			}
-			if(cmd.hasOption("c")) {
-				compatibilityMode = true;
-			}
-			
-			String[] remainingArgs = cmd.getArgs();
-			if(remainingArgs.length == 0 && readFromStdin) {
-				// do nothing
-			}
-			else if(remainingArgs.length == 1){
-				infile = remainingArgs[0];
-			}
-			else {
-				System.out.println("Wrong argument count, type 'eplan -h' for help");
-				System.exit(0);
-			}
-		} catch (ParseException e1) {
-			e1.printStackTrace();
+			cmd = parser.parse(options, args);
+		} catch (ParseException e) {
+			e.printStackTrace();
 			System.exit(1);
 		}
+		
+		if(cmd.hasOption("h")) {
+			HelpFormatter formatter = new HelpFormatter();
+			formatter.printHelp( "eplan [options] FILE", options );
+			System.exit(0);
+		}
+		if(cmd.hasOption("v")) {
+			System.out.println("Version: " + VERSION);
+			System.exit(0);
+		}
+		if(cmd.hasOption("about")) {
+			System.out.println("EPlan - Automated ETCS Planning Tool");
+			System.out.println("Version: " + VERSION);
+			System.out.println("Supports PlanPro Version " + PLANPRO_VERSION);
+			System.out.println();
+			System.out.println("Copyright (c) 2017-2025, The FormETCS Project. All rights reserved.");
+			System.out.println("This program is licensed under the terms of the Modified (3-Clause) BSD License.");
+			System.exit(0);
+		}
+		if(cmd.hasOption("o")) {
+			outfile = cmd.getOptionValue("o");
+		}
+		if(cmd.hasOption("stdin")) {
+			readFromStdin = true;
+		}
+		if(cmd.hasOption("l")) {
+			try {
+				etcslevel = Integer.parseInt(cmd.getOptionValue("l"));
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+		}
+		if(cmd.hasOption("a")) {
+			addlist = cmd.getOptionValues("a");
+		}
+		if(cmd.hasOption("r")) {
+			removelist = cmd.getOptionValues("r");
+		}
+		if(cmd.hasOption("debug")) {
+			enableDebug = true;
+		}
+		if(cmd.hasOption("stderr")) {
+			writeToStderr = true;
+		}
+		if(cmd.hasOption("q")) {
+			enableLog = false;
+			enableDebug = false;
+		}
+		if(cmd.hasOption("logfile")) {
+			logfile = cmd.getOptionValue("logfile");
+		}
+		if(cmd.hasOption("c")) {
+			compatibilityMode = true;
+		}
+		
+		
+		
+		String[] remainingArgs = cmd.getArgs();
+		if(remainingArgs.length == 0 && readFromStdin) {
+			// do nothing
+		}
+		else if(remainingArgs.length == 1){
+			infile = remainingArgs[0];
+		}
+		else {
+			System.out.println("Wrong argument count, type 'eplan -h' for help");
+			System.exit(0);
+		}
+		
 		
 		if(outfile == null && logfile == null && !writeToStderr) {
 			enableLog = false;
@@ -169,22 +184,39 @@ public class Main {
 		Logger.writeToStderr(writeToStderr);
 		Logger.setLogfile(logfile);
 		
-		try {
-			PlanProModel ppm = new PlanProModel();
+		PlanProModel ppm = new PlanProModel();
+		
+		try {	
 			if(readFromStdin) {
 				ppm.readFromStdin();
 			}
 			else {
 				ppm.readFile(infile);
 			}
-			Constructor constructor = new Constructor(ppm);
-			constructor.setEtcslevel(etcslevel);
-			constructor.setSelectionLists(addlist, removelist);
-			constructor.setCompatibilityMode(compatibilityMode);
-			constructor.constructEtcsLine();
-			
-			ppm.updatePlanProHeader("EPlan", VERSION);
-			
+		} catch (JDOMException e) {
+			e.printStackTrace();
+			System.exit(1);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
+		if(cmd.hasOption("create-end")) {
+			ppm.createEndState();
+		}
+		Constructor constructor = new Constructor(ppm);
+		constructor.setEtcslevel(etcslevel);
+		constructor.setSelectionLists(addlist, removelist);
+		constructor.setCompatibilityMode(compatibilityMode);
+		constructor.constructEtcsLine();
+		
+		if(cmd.hasOption("delete-start")) {
+			ppm.deleteStartState();
+		}
+		
+		ppm.updatePlanProHeader("EPlan", VERSION);
+		
+		try {
 			if(outfile != null) {
 				ppm.writeFile(outfile);
 			}
@@ -192,9 +224,6 @@ public class Main {
 				System.out.println(ppm);
 			}
 			Logger.writeLogfile();
-		} catch (JDOMException e) {
-			e.printStackTrace();
-			System.exit(1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
