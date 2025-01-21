@@ -1,7 +1,7 @@
 /**
  * EPlan - Automated ETCS Planning Tool
  * 
- * Copyright (c) 2017-2024, The FormETCS Project. All rights reserved.
+ * Copyright (c) 2017-2025, The FormETCS Project. All rights reserved.
  * This file is licensed under the terms of the Modified (3-Clause) BSD License.
  * 
  * SPDX-License-Identifier: BSD-3-Clause
@@ -13,7 +13,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.net.URL;
+import java.time.LocalDateTime;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -89,6 +91,18 @@ public class PlanProModel {
 	
 	
 	/**
+	 * Read the DOM tree from standard input.
+	 * 
+	 * 
+	 * @throws JDOMException if an XML parse error occurs
+	 * @throws IOException if a file error occurs
+	 */
+	public void readFromStdin() throws JDOMException, IOException {
+		doc = new SAXBuilder().build(System.in);
+	}
+	
+	
+	/**
 	 * Write the DOM tree into an XML file.
 	 * 
 	 * 
@@ -103,15 +117,83 @@ public class PlanProModel {
 	
 	
 	/**
-	 * Get the container element, which is the parent of all PlanPro objects.
+	 * Get the container element, which is the parent of all PlanPro objects of a specific category.
 	 * 
 	 * 
-	 * @return the DOM element of the container element
+	 * @param category the category of the container
+	 * @return the DOM element of the container element, or null if no such element exists
 	 */
-	public Element getContainerElement() {
+	public Element getContainerElement(String category) {
 		Element rootElem = doc.getRootElement();
-		Element containerElem = rootElem.getChild("LST_Planung_Projekt").getChild("LST_Planung_Gruppe").getChild("LST_Planung_Einzel").getChild("LST_Zustand_Ziel").getChild("Container");
-		return containerElem;
+		Element fachdatenElem = rootElem.getChild("LST_Planung").getChild("Fachdaten");
+		List<Element> ausgabeFachdatenList = fachdatenElem.getChildren("Ausgabe_Fachdaten");
+		for(int i = 0; i < ausgabeFachdatenList.size(); i++) {
+			Element ausgabeFachdatenElem = ausgabeFachdatenList.get(i);
+			Element untergewerkElem = ausgabeFachdatenElem.getChild("Untergewerk_Art").getChild("Wert");
+			if(untergewerkElem.getText().equals(category)) {
+				return ausgabeFachdatenElem.getChild("LST_Zustand_Ziel").getChild("Container");
+			}
+		}
+		return null;
+	}
+	
+	
+	/**
+	 * Create a new container element for a specific category.
+	 * If the category already exists, the existing element is returned.
+	 * If it has to be created, the whole subtree for the category including identity
+	 * and empty start state is also created, to keep the XML schema valid.
+	 * 
+	 * 
+	 * @param category the category of the container
+	 * @return the DOM element of the existing or newly created container element
+	 */
+	public Element createContainerElement(String category) {
+		Element e = getContainerElement(category);
+		if(e != null) {
+			return e;
+		}
+		Element rootElem = doc.getRootElement();
+		Element fachdatenElem = rootElem.getChild("LST_Planung").getChild("Fachdaten");
+		Element ausgabeFachdatenElem = new Element("Ausgabe_Fachdaten");
+		fachdatenElem.addContent(ausgabeFachdatenElem);
+		
+		Element identitaetElem = new Element("Identitaet");
+		ausgabeFachdatenElem.addContent(identitaetElem);
+		Element identitaetWertElem = new Element("Wert");
+		identitaetElem.addContent(identitaetWertElem);
+		UUID guid = UUID.randomUUID();
+		identitaetWertElem.setText(guid.toString().toUpperCase());
+		
+		Element zustandStartElem = new Element("LST_Zustand_Start");
+		ausgabeFachdatenElem.addContent(zustandStartElem);
+		Element identitaetStartElem = new Element("Identitaet");
+		zustandStartElem.addContent(identitaetStartElem);
+		Element identitaetStartWertElem = new Element("Wert");
+		identitaetStartElem.addContent(identitaetStartWertElem);
+		UUID guidStart = UUID.randomUUID();
+		identitaetStartWertElem.setText(guidStart.toString().toUpperCase());
+		Element containerStartElem = new Element("Container");
+		zustandStartElem.addContent(containerStartElem);
+		
+		Element zustandZielElem = new Element("LST_Zustand_Ziel");
+		ausgabeFachdatenElem.addContent(zustandZielElem);
+		Element identitaetZielElem = new Element("Identitaet");
+		zustandZielElem.addContent(identitaetZielElem);
+		Element identitaetZielWertElem = new Element("Wert");
+		identitaetZielElem.addContent(identitaetZielWertElem);
+		UUID guidZiel = UUID.randomUUID();
+		identitaetZielWertElem.setText(guidZiel.toString().toUpperCase());
+		Element containerZielElem = new Element("Container");
+		zustandZielElem.addContent(containerZielElem);
+		
+		Element untergewerkArtElem = new Element("Untergewerk_Art");
+		ausgabeFachdatenElem.addContent(untergewerkArtElem);
+		Element untergewerkArtWertElem = new Element("Wert");
+		untergewerkArtElem.addContent(untergewerkArtWertElem);
+		untergewerkArtWertElem.setText(category);
+		
+		return containerZielElem;
 	}
 	
 	
@@ -122,7 +204,42 @@ public class PlanProModel {
 	 * @return a list of DOM elements, containing all PlanPro objects
 	 */
 	public List<Element> getPlanProObjectList() {
-		return getContainerElement().getChildren();
+		List<Element> returnval = new ArrayList<Element>();
+		Element rootElem = doc.getRootElement();
+		Element fachdatenElem = rootElem.getChild("LST_Planung").getChild("Fachdaten");
+		List<Element> ausgabeFachdatenList = fachdatenElem.getChildren("Ausgabe_Fachdaten");
+		for(int i = 0; i < ausgabeFachdatenList.size(); i++) {
+			Element ausgabeFachdatenElem = ausgabeFachdatenList.get(i);
+			Element containerElem = ausgabeFachdatenElem.getChild("LST_Zustand_Ziel").getChild("Container");
+			List<Element> planProObjectList = containerElem.getChildren();
+			for(int j = 0; j < planProObjectList.size(); j++) {
+				Element o = planProObjectList.get(j);
+				returnval.add(o);
+			}
+		}
+		return returnval;
+	}
+	
+	
+	/**
+	 * Update the PlanPro header with the current timestamp, toolname, toolversion and a new GUID.
+	 * This is necessary after a write operation to the PlanPro file to allow detection of changes.
+	 * 
+	 * @param toolname the name of the tool that has written most recently
+	 * @param toolversion the version of the tool that has written most recently
+	 */
+	public void updatePlanProHeader(String toolname, String toolversion) {
+		Element rootElem = doc.getRootElement();
+		Element idElem = rootElem.getChild("Identitaet").getChild("Wert");
+		Element timestampElem = rootElem.getChild("PlanPro_Schnittstelle_Allg").getChild("Erzeugung_Zeitstempel").getChild("Wert");
+		Element toolnameElem = rootElem.getChild("PlanPro_Schnittstelle_Allg").getChild("Werkzeug_Name").getChild("Wert");
+		Element toolversionElem = rootElem.getChild("PlanPro_Schnittstelle_Allg").getChild("Werkzeug_Version").getChild("Wert");
+		
+		UUID guid = UUID.randomUUID();
+		idElem.setText(guid.toString().toUpperCase());
+		timestampElem.setText(LocalDateTime.now().toString());
+		toolnameElem.setText(toolname);
+		toolversionElem.setText(toolversion);
 	}
 	
 	

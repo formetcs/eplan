@@ -1,9 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PlanPro_Schnittstelle>
- <LST_Planung_Projekt>
-  <LST_Planung_Gruppe>
-   <LST_Planung_Einzel>
+ <Identitaet><Wert>00000000-0000-0000-0000-000000000001</Wert></Identitaet>
+ <PlanPro_Schnittstelle_Allg>
+  <Bemerkung><Wert>Test Scenario for Unit Tests</Wert></Bemerkung>
+  <Erzeugung_Zeitstempel><Wert>2025-01-21T12:11:22Z</Wert></Erzeugung_Zeitstempel>
+  <Werkzeug_Name><Wert>manually created</Wert></Werkzeug_Name>
+  <Werkzeug_Version><Wert>1.0.0</Wert></Werkzeug_Version>
+ </PlanPro_Schnittstelle_Allg>
+ <LST_Planung>
+  <Fachdaten>
+   <Ausgabe_Fachdaten>
+    <Identitaet><Wert>00000000-0000-0000-0000-000000000002</Wert></Identitaet>
+    <LST_Zustand_Start>
+     <Identitaet><Wert>00000000-0000-0000-0000-000000000003</Wert></Identitaet>
+     <Container/>
+    </LST_Zustand_Start>
     <LST_Zustand_Ziel>
+     <Identitaet><Wert>00000000-0000-0000-0000-000000000004</Wert></Identitaet>
      <Container>
       <Signal>
        <Identitaet><Wert>11111111-2222-3333-4444-000000660001</Wert></Identitaet>
@@ -130,6 +143,19 @@
         <Bezeichnung_Aussenanlage><Wert>S13</Wert></Bezeichnung_Aussenanlage>
        </Bezeichnung>
       </Signal>
+     </Container>
+    </LST_Zustand_Ziel>
+    <Untergewerk_Art><Wert>ESTW</Wert></Untergewerk_Art>
+   </Ausgabe_Fachdaten>
+   <Ausgabe_Fachdaten>
+    <Identitaet><Wert>00000000-0000-0000-0000-000000000005</Wert></Identitaet>
+    <LST_Zustand_Start>
+     <Identitaet><Wert>00000000-0000-0000-0000-000000000006</Wert></Identitaet>
+     <Container/>
+    </LST_Zustand_Start>
+    <LST_Zustand_Ziel>
+     <Identitaet><Wert>00000000-0000-0000-0000-000000000007</Wert></Identitaet>
+     <Container>
       <TOP_Kante>
        <Identitaet><Wert>11111111-2222-3333-4444-000000550019</Wert></Identitaet>
        <ID_TOP_Knoten_A><Wert>11111111-2222-3333-4444-000000440015</Wert></ID_TOP_Knoten_A>
@@ -816,7 +842,8 @@
       </GEO_Knoten>
      </Container>
     </LST_Zustand_Ziel>
-   </LST_Planung_Einzel>
-  </LST_Planung_Gruppe>
- </LST_Planung_Projekt>
+    <Untergewerk_Art><Wert>Geo</Wert></Untergewerk_Art>
+   </Ausgabe_Fachdaten>
+  </Fachdaten>
+ </LST_Planung>
 </PlanPro_Schnittstelle>

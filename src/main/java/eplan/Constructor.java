@@ -1,7 +1,7 @@
 /**
  * EPlan - Automated ETCS Planning Tool
  * 
- * Copyright (c) 2017-2024, The FormETCS Project. All rights reserved.
+ * Copyright (c) 2017-2025, The FormETCS Project. All rights reserved.
  * This file is licensed under the terms of the Modified (3-Clause) BSD License.
  * 
  * SPDX-License-Identifier: BSD-3-Clause
@@ -769,8 +769,8 @@ public class Constructor {
 	 */
 	private void placeDpHs() {
 		Logger.log("placing DP HS...");
-		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		Element etcsContainerElement = ppm.createContainerElement("ETCS");
+		List<Element> objectList = ppm.getPlanProObjectList();
 		for(int i = 0; i < objectList.size(); i++) {
 			Element currentObject = objectList.get(i);
 			if(!currentObject.getName().equals("Signal")) {
@@ -803,9 +803,9 @@ public class Constructor {
 					dp.addContent(createDpAllgElement("ESG", nextpotk.wirkrichtung, "Hauptsignal-DP (Typ HS)", 3, "Signal"));
 					dp.addContent(createTypEsgElement("HS"));
 					Logger.log("--placing DP at km " + printKmValue(dp));
-					containerElement.addContent(dp);
-					containerElement.addContent(createBalise(guid, 1));
-					containerElement.addContent(createBalise(guid, 2));
+					etcsContainerElement.addContent(dp);
+					etcsContainerElement.addContent(createBalise(guid, 1));
+					etcsContainerElement.addContent(createBalise(guid, 2));
 				}
 			}
 		}
@@ -817,8 +817,8 @@ public class Constructor {
 	 */
 	private void placeDpMs() {
 		Logger.log("placing DP MS...");
-		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		Element etcsContainerElement = ppm.createContainerElement("ETCS");
+		List<Element> objectList = ppm.getPlanProObjectList();
 		for(int i = 0; i < objectList.size(); i++) {
 			Element currentObject = objectList.get(i);
 			if(!currentObject.getName().equals("Signal")) {
@@ -851,9 +851,9 @@ public class Constructor {
 					dp.addContent(createDpAllgElement("ESG", nextpotk.wirkrichtung, "Mehrabschnittssignal-DP (Typ MS)", 3, "Signal"));
 					dp.addContent(createTypEsgElement("MS"));
 					Logger.log("--placing DP at km " + printKmValue(dp));
-					containerElement.addContent(dp);
-					containerElement.addContent(createBalise(guid, 1));
-					containerElement.addContent(createBalise(guid, 2));
+					etcsContainerElement.addContent(dp);
+					etcsContainerElement.addContent(createBalise(guid, 1));
+					etcsContainerElement.addContent(createBalise(guid, 2));
 				}
 			}
 		}
@@ -865,8 +865,8 @@ public class Constructor {
 	 */
 	private void placeDpVs() {
 		Logger.log("placing DP VS...");
-		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		Element etcsContainerElement = ppm.createContainerElement("ETCS");
+		List<Element> objectList = ppm.getPlanProObjectList();
 		for(int i = 0; i < objectList.size(); i++) {
 			Element currentObject = objectList.get(i);
 			if(!currentObject.getName().equals("Signal")) {
@@ -899,9 +899,9 @@ public class Constructor {
 					dp.addContent(createDpAllgElement("ESG", nextpotk.wirkrichtung, "Vorsignal-DP (Typ VS)", 3, "Signal"));
 					dp.addContent(createTypEsgElement("VS"));
 					Logger.log("--placing DP at km " + printKmValue(dp));
-					containerElement.addContent(dp);
-					containerElement.addContent(createBalise(guid, 1));
-					containerElement.addContent(createBalise(guid, 2));
+					etcsContainerElement.addContent(dp);
+					etcsContainerElement.addContent(createBalise(guid, 1));
+					etcsContainerElement.addContent(createBalise(guid, 2));
 				}
 			}
 		}
@@ -913,8 +913,8 @@ public class Constructor {
 	 */
 	private void placeDpVw() {
 		Logger.log("placing DP VW...");
-		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		Element etcsContainerElement = ppm.createContainerElement("ETCS");
+		List<Element> objectList = ppm.getPlanProObjectList();
 		for(int i = 0; i < objectList.size(); i++) {
 			Element currentObject = objectList.get(i);
 			if(!currentObject.getName().equals("Signal")) {
@@ -947,9 +947,9 @@ public class Constructor {
 					dp.addContent(createDpAllgElement("ESG", nextpotk.wirkrichtung, "Vorsignalwiederholer-DP (Typ VW)", 3, "Signal"));
 					dp.addContent(createTypEsgElement("VW"));
 					Logger.log("--placing DP at km " + printKmValue(dp));
-					containerElement.addContent(dp);
-					containerElement.addContent(createBalise(guid, 1));
-					containerElement.addContent(createBalise(guid, 2));
+					etcsContainerElement.addContent(dp);
+					etcsContainerElement.addContent(createBalise(guid, 1));
+					etcsContainerElement.addContent(createBalise(guid, 2));
 				}
 			}
 		}
@@ -961,8 +961,8 @@ public class Constructor {
 	 */
 	private void placeDpAw() {
 		Logger.log("placing DP AW...");
-		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		Element etcsContainerElement = ppm.createContainerElement("ETCS");
+		List<Element> objectList = ppm.getPlanProObjectList();
 		for(int i = 0; i < objectList.size(); i++) {
 			Element currentObject = objectList.get(i);
 			if(!currentObject.getName().equals("Signal")) {
@@ -996,9 +996,9 @@ public class Constructor {
 					dp.addContent(createDpAllgElement("ESG", nextpotk.wirkrichtung, "Aufwerte-DP " + dpNr + "/" + nextposlist.size() + " (Typ AW)", 3, "Signal Gleis"));
 					dp.addContent(createTypEsgElement("AW"));
 					Logger.log("--placing DP at km " + printKmValue(dp));
-					containerElement.addContent(dp);
-					containerElement.addContent(createBalise(guid, 1));
-					containerElement.addContent(createBalise(guid, 2));
+					etcsContainerElement.addContent(dp);
+					etcsContainerElement.addContent(createBalise(guid, 1));
+					etcsContainerElement.addContent(createBalise(guid, 2));
 				}
 			}
 		}
@@ -1010,8 +1010,7 @@ public class Constructor {
 	 */
 	private void placeDp9() {
 		Logger.log("placing DP 9...");
-		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		List<Element> objectList = ppm.getPlanProObjectList();
 		for(int i = 0; i < objectList.size(); i++) {
 			Element currentObject = objectList.get(i);
 			if(!currentObject.getName().equals("Datenpunkt")) {
@@ -1047,8 +1046,8 @@ public class Constructor {
 	private void placeDp20() {
 		Logger.log("placing DP 20...");
 		List<Element> alreadyHandledSignals = new ArrayList<Element>();
-		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		Element etcsContainerElement = ppm.createContainerElement("ETCS");
+		List<Element> objectList = ppm.getPlanProObjectList();
 		for(int i = 0; i < objectList.size(); i++) {
 			Element currentObject = objectList.get(i);
 			if(!currentObject.getName().equals("Signal")) {
@@ -1096,9 +1095,9 @@ public class Constructor {
 						dp.addContent(createTypEtcsElement(types));
 						Logger.log("--combining with " + printSignalBezeichnung(current.punktObjektElement) + " (km " + printKmValue(current.punktObjektElement) + ")");
 						Logger.log("--placing DP (combined) at km " + printKmValue(dp));
-						containerElement.addContent(dp);
-						containerElement.addContent(createBalise(guid, 1));
-						containerElement.addContent(createBalise(guid, 2));
+						etcsContainerElement.addContent(dp);
+						etcsContainerElement.addContent(createBalise(guid, 1));
+						etcsContainerElement.addContent(createBalise(guid, 2));
 						alreadyHandledSignals.add(current.punktObjektElement);
 						alreadyPlacedDp = true;
 						break; // there should be no other path to be equipped with DP 20
@@ -1125,9 +1124,9 @@ public class Constructor {
 						dp.addContent(createTypEtcsElement(types));
 						Logger.log("--combining with " + printSignalBezeichnung(current.punktObjektElement) + " (km " + printKmValue(current.punktObjektElement) + ")");
 						Logger.log("--placing DP (combined) at km " + printKmValue(dp));
-						containerElement.addContent(dp);
-						containerElement.addContent(createBalise(guid, 1));
-						containerElement.addContent(createBalise(guid, 2));
+						etcsContainerElement.addContent(dp);
+						etcsContainerElement.addContent(createBalise(guid, 1));
+						etcsContainerElement.addContent(createBalise(guid, 2));
 						alreadyHandledSignals.add(current.punktObjektElement);
 						alreadyPlacedDp = true;
 						break; // there should be no other path to be equipped with DP 20
@@ -1148,7 +1147,7 @@ public class Constructor {
 	 * @param currentObject DOM element of the reference point for the datapoint
 	 */
 	private void placeDp20Regular(Element currentObject) {
-		Element containerElement = ppm.getContainerElement();
+		Element etcsContainerElement = ppm.createContainerElement("ETCS");
 		String signalId = currentObject.getChild("Identitaet").getChild("Wert").getText();
 		List<PunktObjekt> nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), -6000);
 		for(int j = 0; j < nextposlist.size(); j++) {
@@ -1168,9 +1167,9 @@ public class Constructor {
 			int[] types = {20};
 			dp.addContent(createTypEtcsElement(types));
 			Logger.log("--placing DP at km " + printKmValue(dp));
-			containerElement.addContent(dp);
-			containerElement.addContent(createBalise(guid, 1));
-			containerElement.addContent(createBalise(guid, 2));
+			etcsContainerElement.addContent(dp);
+			etcsContainerElement.addContent(createBalise(guid, 1));
+			etcsContainerElement.addContent(createBalise(guid, 2));
 		}
 	}
 	
@@ -1183,8 +1182,8 @@ public class Constructor {
 	private void placeDp21() {
 		Logger.log("placing DP 21...");
 		List<Element> alreadyHandledSignals = new ArrayList<Element>();
-		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		Element etcsContainerElement = ppm.createContainerElement("ETCS");
+		List<Element> objectList = ppm.getPlanProObjectList();
 		for(int i = 0; i < objectList.size(); i++) {
 			Element currentObject = objectList.get(i);
 			if(!currentObject.getName().equals("Signal")) {
@@ -1241,9 +1240,9 @@ public class Constructor {
 						dp.addContent(createTypEtcsElement(types));
 						Logger.log("--combining with " + printSignalBezeichnung(current.punktObjektElement) + " (km " + printKmValue(current.punktObjektElement) + ")");
 						Logger.log("--placing DP (combined) at km " + printKmValue(dp));
-						containerElement.addContent(dp);
-						containerElement.addContent(createBalise(guid, 1));
-						containerElement.addContent(createBalise(guid, 2));
+						etcsContainerElement.addContent(dp);
+						etcsContainerElement.addContent(createBalise(guid, 1));
+						etcsContainerElement.addContent(createBalise(guid, 2));
 						alreadyHandledSignals.add(current.punktObjektElement);
 						alreadyPlacedDp = true;
 						break; // there should be no other path to be equipped with DP 21
@@ -1270,9 +1269,9 @@ public class Constructor {
 						dp.addContent(createTypEtcsElement(types));
 						Logger.log("--combining with " + printSignalBezeichnung(current.punktObjektElement) + " (km " + printKmValue(current.punktObjektElement) + ")");
 						Logger.log("--placing DP (combined) at km " + printKmValue(dp));
-						containerElement.addContent(dp);
-						containerElement.addContent(createBalise(guid, 1));
-						containerElement.addContent(createBalise(guid, 2));
+						etcsContainerElement.addContent(dp);
+						etcsContainerElement.addContent(createBalise(guid, 1));
+						etcsContainerElement.addContent(createBalise(guid, 2));
 						alreadyHandledSignals.add(current.punktObjektElement);
 						alreadyPlacedDp = true;
 						break; // there should be no other path to be equipped with DP 21
@@ -1293,7 +1292,7 @@ public class Constructor {
 	 * @param currentObject DOM element of the reference point for the datapoint
 	 */
 	private void placeDp21Regular(Element currentObject) {
-		Element containerElement = ppm.getContainerElement();
+		Element etcsContainerElement = ppm.createContainerElement("ETCS");
 		String signalId = currentObject.getChild("Identitaet").getChild("Wert").getText();
 		List<PunktObjekt> nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), -6000);
 		for(int j = 0; j < nextposlist.size(); j++) {
@@ -1313,9 +1312,9 @@ public class Constructor {
 			int[] types = {21};
 			dp.addContent(createTypEtcsElement(types));
 			Logger.log("--placing DP at km " + printKmValue(dp));
-			containerElement.addContent(dp);
-			containerElement.addContent(createBalise(guid, 1));
-			containerElement.addContent(createBalise(guid, 2));
+			etcsContainerElement.addContent(dp);
+			etcsContainerElement.addContent(createBalise(guid, 1));
+			etcsContainerElement.addContent(createBalise(guid, 2));
 		}
 	}
 	
@@ -1328,8 +1327,8 @@ public class Constructor {
 	private void placeDp22() {
 		Logger.log("placing DP 22...");
 		List<Element> alreadyHandledSignals = new ArrayList<Element>();
-		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		Element etcsContainerElement = ppm.createContainerElement("ETCS");
+		List<Element> objectList = ppm.getPlanProObjectList();
 		for(int i = 0; i < objectList.size(); i++) {
 			Element currentObject = objectList.get(i);
 			if(!currentObject.getName().equals("Signal")) {
@@ -1368,8 +1367,8 @@ public class Constructor {
 						dp.addContent(createTypEtcsElement(types));
 						Logger.log("--combining with " + printSignalBezeichnung(current.punktObjektElement) + " (km " + printKmValue(current.punktObjektElement) + ")");
 						Logger.log("--placing DP (combined) at km " + printKmValue(dp));
-						containerElement.addContent(dp);
-						containerElement.addContent(createBalise(guid, 1));
+						etcsContainerElement.addContent(dp);
+						etcsContainerElement.addContent(createBalise(guid, 1));
 						alreadyHandledSignals.add(current.punktObjektElement);
 						alreadyPlacedDp = true;
 						break; // there should be no other path to be equipped with DP 22
@@ -1396,8 +1395,8 @@ public class Constructor {
 						dp.addContent(createTypEtcsElement(types));
 						Logger.log("--combining with " + printSignalBezeichnung(current.punktObjektElement) + " (km " + printKmValue(current.punktObjektElement) + ")");
 						Logger.log("--placing DP (combined) at km " + printKmValue(dp));
-						containerElement.addContent(dp);
-						containerElement.addContent(createBalise(guid, 1));
+						etcsContainerElement.addContent(dp);
+						etcsContainerElement.addContent(createBalise(guid, 1));
 						alreadyHandledSignals.add(current.punktObjektElement);
 						alreadyPlacedDp = true;
 						break; // there should be no other path to be equipped with DP 22
@@ -1418,7 +1417,7 @@ public class Constructor {
 	 * @param currentObject DOM element of the reference point for the datapoint
 	 */
 	private void placeDp22Regular(Element currentObject) {
-		Element containerElement = ppm.getContainerElement();
+		Element etcsContainerElement = ppm.createContainerElement("ETCS");
 		String signalId = currentObject.getChild("Identitaet").getChild("Wert").getText();
 		List<PunktObjekt> nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), 0);
 		for(int j = 0; j < nextposlist.size(); j++) {
@@ -1438,8 +1437,8 @@ public class Constructor {
 			int[] types = {22};
 			dp.addContent(createTypEtcsElement(types));
 			Logger.log("--placing DP at km " + printKmValue(dp));
-			containerElement.addContent(dp);
-			containerElement.addContent(createBalise(guid, 1));
+			etcsContainerElement.addContent(dp);
+			etcsContainerElement.addContent(createBalise(guid, 1));
 		}
 	}
 	
@@ -1452,8 +1451,8 @@ public class Constructor {
 	private void placeDp23() {
 		Logger.log("placing DP 23...");
 		List<Element> alreadyHandledSignals = new ArrayList<Element>();
-		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		Element etcsContainerElement = ppm.createContainerElement("ETCS");
+		List<Element> objectList = ppm.getPlanProObjectList();
 		for(int i = 0; i < objectList.size(); i++) {
 			Element currentObject = objectList.get(i);
 			if(!currentObject.getName().equals("Signal")) {
@@ -1511,8 +1510,8 @@ public class Constructor {
 							dp.addContent(createTypEtcsElement(types));
 							Logger.log("--combining with " + printSignalBezeichnung(current.punktObjektElement) + " (km " + printKmValue(current.punktObjektElement) + ")");
 							Logger.log("--placing DP (combined) at km " + printKmValue(dp));
-							containerElement.addContent(dp);
-							containerElement.addContent(createBalise(guid, 1));
+							etcsContainerElement.addContent(dp);
+							etcsContainerElement.addContent(createBalise(guid, 1));
 							alreadyHandledSignals.add(current.punktObjektElement);
 							break; // there should be no other path to be equipped with DP 23
 						}
@@ -1536,7 +1535,7 @@ public class Constructor {
 	 * @param currentObject DOM element of the reference point for the datapoint
 	 */
 	private void placeDp23Regular(Element currentObject) {
-		Element containerElement = ppm.getContainerElement();
+		Element etcsContainerElement = ppm.createContainerElement("ETCS");
 		String signalId = currentObject.getChild("Identitaet").getChild("Wert").getText();
 		List<PunktObjekt> nextposlist = ppm.calculatePosition(PunktObjekt.valueOf(currentObject), -300000);
 		for(int j = 0; j < nextposlist.size(); j++) {
@@ -1557,8 +1556,8 @@ public class Constructor {
 			int[] types = {23};
 			dp.addContent(createTypEtcsElement(types));
 			Logger.log("--placing DP at km " + printKmValue(dp));
-			containerElement.addContent(dp);
-			containerElement.addContent(createBalise(guid, 1));
+			etcsContainerElement.addContent(dp);
+			etcsContainerElement.addContent(createBalise(guid, 1));
 		}
 	}
 	
@@ -1568,8 +1567,8 @@ public class Constructor {
 	 */
 	private void placeDp24() {
 		Logger.log("placing DP 24...");
-		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		Element etcsContainerElement = ppm.createContainerElement("ETCS");
+		List<Element> objectList = ppm.getPlanProObjectList();
 		for(int i = 0; i < objectList.size(); i++) {
 			Element currentObject = objectList.get(i);
 			if(!currentObject.getName().equals("Signal")) {
@@ -1614,8 +1613,8 @@ public class Constructor {
 					int[] types = {24};
 					dp.addContent(createTypEtcsElement(types));
 					Logger.log("--placing DP at km " + printKmValue(dp));
-					containerElement.addContent(dp);
-					containerElement.addContent(createBalise(guid, 1));
+					etcsContainerElement.addContent(dp);
+					etcsContainerElement.addContent(createBalise(guid, 1));
 				}
 			}
 		}
@@ -1638,8 +1637,8 @@ public class Constructor {
 		boolean finished = false;
 		boolean modified = false;
 		while(!finished) {
-			Element containerElement = ppm.getContainerElement();
-			List<Element> objectList = containerElement.getChildren();
+			Element etcsContainerElement = ppm.createContainerElement("ETCS");
+			List<Element> objectList = ppm.getPlanProObjectList();
 			for(int i = 0; i < objectList.size() && !modified; i++) {
 				Element currentObject = objectList.get(i);
 				if(!currentObject.getName().equals("Datenpunkt")) {
@@ -1702,8 +1701,8 @@ public class Constructor {
 					int[] types = {25};
 					dp.addContent(createTypEtcsElement(types));
 					Logger.log("--placing DP at km " + printKmValue(dp));
-					containerElement.addContent(dp);
-					containerElement.addContent(createBalise(guid, 1));
+					etcsContainerElement.addContent(dp);
+					etcsContainerElement.addContent(createBalise(guid, 1));
 					modified = true;
 				}
 			}
@@ -1722,8 +1721,8 @@ public class Constructor {
 	 */
 	private void placeDp26() {
 		Logger.log("placing DP 26...");
-		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		Element etcsContainerElement = ppm.createContainerElement("ETCS");
+		List<Element> objectList = ppm.getPlanProObjectList();
 		for(int i = 0; i < objectList.size(); i++) {
 			Element currentObject = objectList.get(i);
 			if(!currentObject.getName().equals("Signal")) {
@@ -1808,9 +1807,9 @@ public class Constructor {
 						int[] types = {26};
 						dp.addContent(createTypEtcsElement(types));
 						Logger.log("--placing DP at km " + printKmValue(dp));
-						containerElement.addContent(dp);
-						containerElement.addContent(createBalise(guid, 1));
-						containerElement.addContent(createBalise(guid, 2));
+						etcsContainerElement.addContent(dp);
+						etcsContainerElement.addContent(createBalise(guid, 1));
+						etcsContainerElement.addContent(createBalise(guid, 2));
 					}
 				}
 				
@@ -1834,9 +1833,9 @@ public class Constructor {
 					int[] types = {26};
 					dp.addContent(createTypEtcsElement(types));
 					Logger.log("--placing DP at km " + printKmValue(dp));
-					containerElement.addContent(dp);
-					containerElement.addContent(createBalise(guid, 1));
-					containerElement.addContent(createBalise(guid, 2));
+					etcsContainerElement.addContent(dp);
+					etcsContainerElement.addContent(createBalise(guid, 1));
+					etcsContainerElement.addContent(createBalise(guid, 2));
 				}
 			}
 		}
@@ -1848,8 +1847,8 @@ public class Constructor {
 	 */
 	private void placeDp28() {
 		Logger.log("placing DP 28...");
-		Element containerElement = ppm.getContainerElement();
-		List<Element> objectList = containerElement.getChildren();
+		Element etcsContainerElement = ppm.createContainerElement("ETCS");
+		List<Element> objectList = ppm.getPlanProObjectList();
 		for(int i = 0; i < objectList.size(); i++) {
 			Element currentObject = objectList.get(i);
 			if(!currentObject.getName().equals("Signal")) {
@@ -2035,8 +2034,8 @@ public class Constructor {
 						int[] types = {28};
 						dp.addContent(createTypEtcsElement(types));
 						Logger.log("--placing DP at km " + printKmValue(dp));
-						containerElement.addContent(dp);
-						containerElement.addContent(createBalise(guid, 1));
+						etcsContainerElement.addContent(dp);
+						etcsContainerElement.addContent(createBalise(guid, 1));
 					}
 				}
 				for(int dist : twiceDpList) {
@@ -2059,9 +2058,9 @@ public class Constructor {
 						int[] types = {28};
 						dp.addContent(createTypEtcsElement(types));
 						Logger.log("--placing DP at km " + printKmValue(dp));
-						containerElement.addContent(dp);
-						containerElement.addContent(createBalise(guid, 1));
-						containerElement.addContent(createBalise(guid, 2));
+						etcsContainerElement.addContent(dp);
+						etcsContainerElement.addContent(createBalise(guid, 1));
+						etcsContainerElement.addContent(createBalise(guid, 2));
 					}
 				}
 				for(int dist : combinedDpList) {
@@ -2084,8 +2083,8 @@ public class Constructor {
 						int[] types = {24, 28};
 						dp.addContent(createTypEtcsElement(types));
 						Logger.log("--placing DP (combined with DP 24) at km " + printKmValue(dp));
-						containerElement.addContent(dp);
-						containerElement.addContent(createBalise(guid, 1));
+						etcsContainerElement.addContent(dp);
+						etcsContainerElement.addContent(createBalise(guid, 1));
 						alreadyHandledDp24.add(currentObject);
 					}
 				}

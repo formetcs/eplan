@@ -1,7 +1,7 @@
 /**
  * EPlan - Automated ETCS Planning Tool
  * 
- * Copyright (c) 2017-2024, The FormETCS Project. All rights reserved.
+ * Copyright (c) 2017-2025, The FormETCS Project. All rights reserved.
  * This file is licensed under the terms of the Modified (3-Clause) BSD License.
  * 
  * SPDX-License-Identifier: BSD-3-Clause
@@ -30,12 +30,12 @@ public class Main {
 	/**
 	 * Version string of the program.
 	 */
-	private static final String VERSION = "0.2.0";
+	private static final String VERSION = "0.3.0";
 	
 	/**
 	 * Version string of the supported PlanPro version.
 	 */
-	private static final String PLANPRO_VERSION = "1.8.0";
+	private static final String PLANPRO_VERSION = "1.9.0";
 	
 	/**
 	 * Disable instance creation.
@@ -53,24 +53,28 @@ public class Main {
 	public static void main(String[] args) {
 		Options options = new Options();
 		options.addOption("v", "version", false, "print version information and exit");
-		options.addOption("h", "help", false, "print this message");
+		options.addOption("h", "help", false, "print this message and exit");
 		Option aboutOption = Option.builder().longOpt("about").desc("print information about the program and exit").build();
 		options.addOption(aboutOption);
 		Option outfileOption = Option.builder("o").hasArg().argName("file").desc("write generated plan to <file> instead of stdout").build();
 		options.addOption(outfileOption);
+		Option stdinOption = Option.builder().longOpt("stdin").desc("read input plan from stdin instead of from file").build();
+		options.addOption(stdinOption);
 		Option levelOption = Option.builder("l").longOpt("level").hasArg().argName("lv").desc("generate a plan for ETCS Level <lv>").build();
 		options.addOption(levelOption);
-		Option addOption = Option.builder("a").longOpt("add").hasArg().argName("type").desc("add data point <type> to the plan").build();
+		Option addOption = Option.builder("a").longOpt("add").hasArg().argName("type").desc("add <type> to the list of data point types to be planned").build();
 		options.addOption(addOption);
-		Option removeOption = Option.builder("r").longOpt("remove").hasArg().argName("type").desc("remove data point <type> from the plan").build();
+		Option removeOption = Option.builder("r").longOpt("remove").hasArg().argName("type").desc("remove <type> from the list of data point types to be planned").build();
 		options.addOption(removeOption);
-		Option verboseOption = Option.builder().longOpt("verbose").desc("verbose mode (prints out more information)").build();
-		options.addOption(verboseOption);
-		Option debugOption = Option.builder().longOpt("debug").desc("print debug information").build();
+		Option quietOption = Option.builder("q").longOpt("quiet").desc("turn off all logging messages").build();
+		options.addOption(quietOption);
+		Option debugOption = Option.builder().longOpt("debug").desc("print additional debug information").build();
 		options.addOption(debugOption);
-		Option logfileOption = Option.builder().longOpt("logfile").hasArg().argName("file").desc("write verbose or debug info to <file> instead of stdout").build();
+		Option stderrOption = Option.builder().longOpt("stderr").desc("print all logging/debug info to stderr instead of stdout").build();
+		options.addOption(stderrOption);
+		Option logfileOption = Option.builder().longOpt("logfile").hasArg().argName("file").desc("write all logging/debug info to <file> instead of stdout").build();
 		options.addOption(logfileOption);
-		Option compatibilityOption = Option.builder("c").longOpt("compatibility").desc("compatibility mode for files in an older PlanPro format").build();
+		Option compatibilityOption = Option.builder("c").longOpt("compatibility").desc("compatibility mode for files converted from older PlanPro formats").build();
 		options.addOption(compatibilityOption);
 		
 		String infile = null;
@@ -79,6 +83,13 @@ public class Main {
 		String[] addlist = null;
 		String[] removelist = null;
 		boolean compatibilityMode = false;
+		boolean readFromStdin = false;
+		boolean enableLog = true;
+		boolean enableDebug = false;
+		boolean writeToStderr = false;
+		String logfile = null;
+		Logger.enable(true);
+		Logger.enableDebug(false);
 		CommandLineParser parser = new DefaultParser();
 		try {
 			CommandLine cmd = parser.parse(options, args);
@@ -96,12 +107,15 @@ public class Main {
 				System.out.println("Version: " + VERSION);
 				System.out.println("Supports PlanPro Version " + PLANPRO_VERSION);
 				System.out.println();
-				System.out.println("Copyright (c) 2017-2024, The FormETCS Project. All rights reserved.");
+				System.out.println("Copyright (c) 2017-2025, The FormETCS Project. All rights reserved.");
 				System.out.println("This program is licensed under the terms of the Modified (3-Clause) BSD License.");
 				System.exit(0);
 			}
 			if(cmd.hasOption("o")) {
 				outfile = cmd.getOptionValue("o");
+			}
+			if(cmd.hasOption("stdin")) {
+				readFromStdin = true;
 			}
 			if(cmd.hasOption("l")) {
 				etcslevel = Integer.parseInt(cmd.getOptionValue("l"));
@@ -112,42 +126,64 @@ public class Main {
 			if(cmd.hasOption("r")) {
 				removelist = cmd.getOptionValues("r");
 			}
-			if(cmd.hasOption("verbose")) {
-				Logger.enable(true);
-			}
 			if(cmd.hasOption("debug")) {
-				Logger.enableDebug(true);
+				enableDebug = true;
+			}
+			if(cmd.hasOption("stderr")) {
+				writeToStderr = true;
+			}
+			if(cmd.hasOption("q")) {
+				enableLog = false;
+				enableDebug = false;
 			}
 			if(cmd.hasOption("logfile")) {
-				String logfile = cmd.getOptionValue("logfile");
-				Logger.setLogfile(logfile);
+				logfile = cmd.getOptionValue("logfile");
 			}
 			if(cmd.hasOption("c")) {
 				compatibilityMode = true;
 			}
 			
 			String[] remainingArgs = cmd.getArgs();
-			if(remainingArgs.length != 1) {
+			if(remainingArgs.length == 0 && readFromStdin) {
+				// do nothing
+			}
+			else if(remainingArgs.length == 1){
+				infile = remainingArgs[0];
+			}
+			else {
 				System.out.println("Wrong argument count, type 'eplan -h' for help");
 				System.exit(0);
 			}
-			else {
-				infile = remainingArgs[0];
-			}
 		} catch (ParseException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
+			System.exit(1);
 		}
+		
+		if(outfile == null && logfile == null && !writeToStderr) {
+			enableLog = false;
+			enableDebug = false;
+		}
+		
+		Logger.enable(enableLog);
+		Logger.enableDebug(enableDebug);
+		Logger.writeToStderr(writeToStderr);
+		Logger.setLogfile(logfile);
 		
 		try {
 			PlanProModel ppm = new PlanProModel();
-			ppm.readFile(infile);
-			
+			if(readFromStdin) {
+				ppm.readFromStdin();
+			}
+			else {
+				ppm.readFile(infile);
+			}
 			Constructor constructor = new Constructor(ppm);
 			constructor.setEtcslevel(etcslevel);
 			constructor.setSelectionLists(addlist, removelist);
 			constructor.setCompatibilityMode(compatibilityMode);
 			constructor.constructEtcsLine();
+			
+			ppm.updatePlanProHeader("EPlan", VERSION);
 			
 			if(outfile != null) {
 				ppm.writeFile(outfile);
@@ -157,11 +193,11 @@ public class Main {
 			}
 			Logger.writeLogfile();
 		} catch (JDOMException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(1);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 }
